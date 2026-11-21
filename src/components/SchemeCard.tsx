@@ -1,13 +1,35 @@
 import { useState } from 'react';
+import type { ReactNode } from 'react';
+import { BookmarkCheck, Check, CircleAlert, Clock, ExternalLink, HelpCircle, X } from 'lucide-react';
+import { Badge, Button, Card, Collapsible, ProgressBar } from './ui';
+import type { BadgeTone } from './ui';
 import type { MatchResult, RuleResult, Scheme } from '../types';
 
 const REVERIFY_AFTER_DAYS = 90;
 const MS_PER_DAY = 24 * 60 * 60 * 1000;
 
-const RESULT_BADGE: Record<RuleResult['result'], { label: string; className: string }> = {
-  pass: { label: 'Pass', className: 'bg-green-100 text-green-800' },
-  fail: { label: 'Fail', className: 'bg-red-100 text-red-800' },
-  unknown: { label: 'Unknown', className: 'bg-gray-200 text-gray-800' },
+const STATUS_BADGE: Record<MatchResult['status'], { label: string; tone: BadgeTone; icon: ReactNode }> = {
+  likely_eligible: {
+    label: 'Likely eligible',
+    tone: 'eligible',
+    icon: <Check className="h-4 w-4" aria-hidden="true" />,
+  },
+  possibly_eligible: {
+    label: 'Possibly eligible',
+    tone: 'possible',
+    icon: <Clock className="h-4 w-4" aria-hidden="true" />,
+  },
+  not_eligible: {
+    label: 'Not eligible',
+    tone: 'notEligible',
+    icon: <X className="h-4 w-4" aria-hidden="true" />,
+  },
+};
+
+const RULE_ICON: Record<RuleResult['result'], { icon: ReactNode; className: string }> = {
+  pass: { icon: <Check className="h-5 w-5" aria-hidden="true" />, className: 'text-green-700 bg-green-100' },
+  fail: { icon: <X className="h-5 w-5" aria-hidden="true" />, className: 'text-red-700 bg-red-100' },
+  unknown: { icon: <HelpCircle className="h-5 w-5" aria-hidden="true" />, className: 'text-slate-600 bg-slate-200' },
 };
 
 function formatValue(value: unknown): string {
@@ -23,21 +45,33 @@ function needsReverification(lastVerified: string): boolean {
   return Date.now() - verifiedAt > REVERIFY_AFTER_DAYS * MS_PER_DAY;
 }
 
-function DocumentItem({ doc }: { doc: Scheme['documents'][number] }) {
-  const [checked, setChecked] = useState(false);
+function DocumentItem({
+  doc,
+  checked,
+  onToggle,
+}: {
+  doc: Scheme['documents'][number];
+  checked: boolean;
+  onToggle: () => void;
+}) {
   return (
     <li>
-      <label className="flex min-h-[44px] cursor-pointer items-start gap-3 py-1">
+      <label
+        className={[
+          'flex min-h-[48px] cursor-pointer items-start gap-3 rounded-xl border p-3 transition duration-150',
+          checked ? 'border-green-200 bg-green-50' : 'border-slate-200 bg-white hover:bg-primary-50',
+        ].join(' ')}
+      >
         <input
           type="checkbox"
-          className="mt-2 h-5 w-5 shrink-0"
+          className="mt-1 h-5 w-5 shrink-0 accent-primary-700"
           checked={checked}
-          onChange={(e) => setChecked(e.target.checked)}
+          onChange={onToggle}
         />
         <span className="flex-1">
-          <span className="block font-medium text-gray-900">{doc.name}</span>
-          <span className="block text-sm text-gray-600">Why: {doc.why}</span>
-          <span className="block text-sm text-gray-600">Where to get it: {doc.where_to_get}</span>
+          <span className="block font-semibold text-slate-900">{doc.name}</span>
+          <span className="block text-sm text-slate-600">Why: {doc.why}</span>
+          <span className="block text-sm text-slate-600">Where to get it: {doc.where_to_get}</span>
         </span>
       </label>
     </li>
@@ -49,89 +83,122 @@ export default function SchemeCard({ scheme, result }: { scheme: Scheme; result:
   const documents = scheme.documents ?? [];
   const applySteps = scheme.apply_steps ?? [];
   const stale = needsReverification(scheme.last_verified);
+  const [checkedDocs, setCheckedDocs] = useState<boolean[]>(() => documents.map(() => false));
+  const readyCount = checkedDocs.filter(Boolean).length;
+  const status = STATUS_BADGE[result.status];
+
+  const toggleDoc = (index: number) =>
+    setCheckedDocs((prev) => prev.map((value, i) => (i === index ? !value : value)));
 
   return (
-    <article className="flex flex-col gap-4 rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">
-      <header className="flex flex-col gap-1">
-        <h3 className="text-lg font-bold text-gray-900">{scheme.name}</h3>
-        <p className="text-sm text-gray-700">{scheme.benefit_summary}</p>
+    <Card animate className="flex flex-col gap-4 border border-slate-200">
+      <header className="flex flex-col gap-3">
+        <div className="flex flex-wrap items-center gap-2">
+          <Badge tone="info">{scheme.level === 'central' ? 'Central' : 'Andhra Pradesh'}</Badge>
+          <Badge tone={status.tone} icon={status.icon}>
+            {status.label}
+          </Badge>
+        </div>
+        <h3 className="text-lg font-bold leading-snug text-slate-900">{scheme.name}</h3>
+        <p className="rounded-xl bg-primary-50 px-4 py-3 text-base font-medium text-primary-900">
+          {scheme.benefit_summary}
+        </p>
       </header>
 
       {result.ruleResults.length > 0 && (
-        <section className="flex flex-col gap-2">
-          <h4 className="text-sm font-semibold text-gray-900">Rules checked</h4>
+        <Collapsible title="Why you match">
           <ul className="flex flex-col gap-2">
             {result.ruleResults.map((r) => (
-              <li key={r.ruleId} className="rounded-lg bg-gray-50 p-3">
-                <div className="flex items-center gap-2">
-                  <span
-                    className={`rounded-full px-2 py-0.5 text-xs font-semibold ${RESULT_BADGE[r.result].className}`}
-                  >
-                    {RESULT_BADGE[r.result].label}
-                  </span>
-                  <span className="text-sm font-medium text-gray-900">{r.field}</span>
-                </div>
-                <p className="mt-1 text-sm text-gray-800">Your value: {formatValue(r.profileValue)}</p>
-                <p className="text-sm text-gray-600">{r.explain}</p>
+              <li key={r.ruleId} className="flex items-start gap-3 rounded-xl bg-slate-50 p-3">
+                <span
+                  className={[
+                    'flex h-8 w-8 shrink-0 items-center justify-center rounded-full',
+                    RULE_ICON[r.result].className,
+                  ].join(' ')}
+                >
+                  {RULE_ICON[r.result].icon}
+                </span>
+                <span className="flex-1">
+                  <span className="block text-sm font-semibold text-slate-900">{r.field}</span>
+                  <span className="block text-sm text-slate-800">Your value: {formatValue(r.profileValue)}</span>
+                  <span className="block text-sm text-slate-600">{r.explain}</span>
+                </span>
               </li>
             ))}
           </ul>
-        </section>
+        </Collapsible>
       )}
 
       {documents.length > 0 && (
-        <section className="flex flex-col gap-2">
-          <h4 className="text-sm font-semibold text-gray-900">Documents to keep ready</h4>
-          <ul className="flex flex-col gap-1">
-            {documents.map((doc) => (
-              <DocumentItem key={doc.name} doc={doc} />
-            ))}
-          </ul>
-        </section>
+        <Collapsible title="Documents to carry">
+          <div className="flex flex-col gap-3">
+            <ProgressBar
+              value={readyCount}
+              max={documents.length}
+              label={`${readyCount} of ${documents.length} ready`}
+              tone="eligible"
+            />
+            <ul className="flex flex-col gap-2">
+              {documents.map((doc, i) => (
+                <DocumentItem key={doc.name} doc={doc} checked={checkedDocs[i]} onToggle={() => toggleDoc(i)} />
+              ))}
+            </ul>
+          </div>
+        </Collapsible>
       )}
 
       {applySteps.length > 0 && (
-        <section className="flex flex-col gap-2">
-          <h4 className="text-sm font-semibold text-gray-900">How to apply</h4>
-          <ol className="list-decimal space-y-1 pl-5 text-sm text-gray-800">
+        <Collapsible title="How to apply">
+          <ol className="flex flex-col gap-2">
             {applySteps.map((step, i) => (
-              <li key={i}>{step}</li>
+              <li key={i} className="flex items-start gap-3">
+                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary-700 text-sm font-bold text-white">
+                  {i + 1}
+                </span>
+                <span className="flex-1 pt-0.5">{step}</span>
+              </li>
             ))}
           </ol>
-        </section>
+        </Collapsible>
       )}
 
-      {scheme.official_url ? (
-        <a
-          href={scheme.official_url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex min-h-[44px] items-center justify-center rounded-xl border border-blue-600 px-4 text-sm font-semibold text-blue-700"
-        >
-          Official website
-        </a>
-      ) : null}
-
-      <footer className="flex flex-col gap-3 border-t border-gray-100 pt-3">
-        <div className="flex flex-wrap items-center gap-2 text-sm text-gray-600">
+      <footer className="flex flex-col gap-3 border-t border-slate-100 pt-4">
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-slate-600">
+          {scheme.official_url ? (
+            <a
+              href={scheme.official_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex min-h-[44px] items-center gap-1.5 rounded-lg font-semibold text-primary-700 underline-offset-2 hover:underline focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-accent-300"
+            >
+              Official website
+              <ExternalLink className="h-4 w-4" aria-hidden="true" />
+            </a>
+          ) : null}
           <span>Last verified: {scheme.last_verified}</span>
           {stale && (
-            <span className="rounded-full bg-amber-100 px-2 py-0.5 text-xs font-semibold text-amber-800">
+            <span className="inline-flex items-center gap-1 rounded-full bg-amber-100 px-2.5 py-0.5 text-xs font-semibold text-amber-800">
+              <CircleAlert className="h-3.5 w-3.5" aria-hidden="true" />
               Needs re-verification
             </span>
           )}
         </div>
-        <button
-          type="button"
+        <Button
+          variant={tracked ? 'secondary' : 'primary'}
           aria-pressed={tracked}
           onClick={() => setTracked((prev) => !prev)}
-          className={`min-h-[44px] rounded-xl px-4 text-sm font-semibold ${
-            tracked ? 'bg-green-600 text-white' : 'bg-blue-600 text-white hover:bg-blue-700'
-          }`}
+          className="w-full sm:w-auto"
         >
-          {tracked ? 'Added to tracker' : 'Add to tracker'}
-        </button>
+          {tracked ? (
+            <>
+              <BookmarkCheck className="h-5 w-5" aria-hidden="true" />
+              Added to tracker
+            </>
+          ) : (
+            'Add to tracker'
+          )}
+        </Button>
       </footer>
-    </article>
+    </Card>
   );
 }

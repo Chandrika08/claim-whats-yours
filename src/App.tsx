@@ -12,9 +12,9 @@ export default function App() {
   return (
     <HashRouter>
       <ProfileProvider>
-        <div className="flex min-h-screen flex-col bg-gray-50 text-gray-900">
+        <div className="flex min-h-screen flex-col bg-cream text-slate-900">
           <Nav />
-          <main className="flex-1 p-4">
+          <main className="mx-auto w-full max-w-2xl flex-1 px-4 py-6">
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/results" element={<Results />} />

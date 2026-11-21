@@ -1,5 +1,7 @@
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { ArrowRight, Check, ListChecks, Pencil, Sparkles, X } from 'lucide-react';
+import { Button, Card, Chip, SectionHeader } from '../components/ui';
 import { useProfile } from '../context/ProfileContext';
 import { matchAll } from '../lib/eligibility';
 import { nextQuestions, type Question } from '../lib/questions';
@@ -64,6 +66,14 @@ const FIELD_META: Partial<Record<keyof Profile, FieldMeta>> = {
 
 const SAMPLE_PROFILES: { id: string; label: string; story: string }[] = sampleData.profiles;
 
+const SAMPLE_AVATARS = ['🧑‍🌾', '👩‍🌾', '🧓', '🎓'];
+
+const STEPS = [
+  { number: 1, label: 'Tell us' },
+  { number: 2, label: 'Confirm' },
+  { number: 3, label: 'See schemes' },
+];
+
 const schemesFallbackMeta: FieldMeta = { label: '', kind: 'text' };
 
 function metaFor(field: string): FieldMeta {
@@ -114,7 +124,7 @@ function FieldEditor({ value, meta, onSave, onCancel }: FieldEditorProps) {
   const canSave = meta.kind === 'number' ? parsed !== null : draft.trim() !== '';
 
   const inputClass =
-    'min-h-11 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-base focus:border-green-700 focus:outline-none';
+    'min-h-12 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-base focus:border-green-700 focus:outline-none';
 
   return (
     <div className="flex w-full flex-col gap-2 sm:flex-row sm:items-center">
@@ -158,14 +168,14 @@ function FieldEditor({ value, meta, onSave, onCancel }: FieldEditorProps) {
           type="button"
           disabled={!canSave}
           onClick={() => onSave(parsed)}
-          className="min-h-11 rounded-md bg-green-700 px-4 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:bg-gray-300"
+          className="min-h-12 rounded-md bg-green-700 px-4 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:bg-gray-300"
         >
           Save
         </button>
         <button
           type="button"
           onClick={onCancel}
-          className="min-h-11 rounded-md border border-gray-300 px-4 text-sm font-semibold text-gray-700 hover:bg-gray-50"
+          className="min-h-12 rounded-md border border-gray-300 px-4 text-sm font-semibold text-gray-700 hover:bg-gray-50"
         >
           Cancel
         </button>
@@ -194,7 +204,7 @@ function NumberQuestion({ question, onAnswer, onNotSure }: NumberQuestionProps) 
         aria-label={question.text}
         value={draft}
         onChange={(e) => setDraft(e.target.value)}
-        className="min-h-11 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-base focus:border-green-700 focus:outline-none sm:max-w-xs"
+        className="min-h-12 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-base focus:border-green-700 focus:outline-none sm:max-w-xs"
       />
       <div className="flex gap-2">
         <button
@@ -203,14 +213,14 @@ function NumberQuestion({ question, onAnswer, onNotSure }: NumberQuestionProps) 
           onClick={() => {
             if (parsed !== null) onAnswer(parsed);
           }}
-          className="min-h-11 rounded-md bg-green-700 px-4 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:bg-gray-300"
+          className="min-h-12 rounded-md bg-green-700 px-4 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:bg-gray-300"
         >
           Save answer
         </button>
         <button
           type="button"
           onClick={onNotSure}
-          className="min-h-11 rounded-md border border-gray-300 px-4 text-sm font-semibold text-gray-700 hover:bg-gray-50"
+          className="min-h-12 rounded-md border border-gray-300 px-4 text-sm font-semibold text-gray-700 hover:bg-gray-50"
         >
           Not sure
         </button>
@@ -250,63 +260,102 @@ export default function Home() {
       })
     : [];
 
-  const buttonBase =
-    'min-h-11 rounded-md border border-gray-300 bg-white px-3 py-2 text-left text-sm font-medium text-gray-800 hover:border-green-700 hover:text-green-700';
-  const chipOptionClass =
-    'min-h-11 rounded-full border border-green-700 bg-white px-4 py-2 text-sm font-medium text-green-800 hover:bg-green-50';
+  const currentStep = !submitted ? 1 : questions.length > 0 ? 2 : 3;
 
   return (
-    <div className="mx-auto flex w-full max-w-2xl flex-col gap-8 px-4 py-6">
-      <header className="flex flex-col gap-2">
-        <h1 className="text-2xl font-bold text-gray-900">Claim What's Yours</h1>
-        <p className="text-base text-gray-600">
-          Describe your family and land in simple words. We will show schemes you are likely eligible for. This is
-          not a guarantee.
+    <div className="mx-auto flex w-full max-w-2xl flex-col gap-8 px-4 py-6 sm:py-10">
+      <header className="flex flex-col gap-3">
+        <p className="text-xs font-semibold uppercase tracking-wide text-accent-700">Claim What's Yours</p>
+        <h1 className="text-3xl font-extrabold leading-tight text-slate-900 sm:text-4xl">
+          Government schemes you may be missing. Find them in one sentence.
+        </h1>
+        <p className="text-base leading-relaxed text-slate-600 sm:text-lg">
+          Checking whether you are likely eligible is free and takes a minute: describe your family and land in simple
+          words. This is not a guarantee.
         </p>
       </header>
 
-      <section className="flex flex-col gap-3">
-        <label htmlFor="context-text" className="text-base font-semibold text-gray-900">
+      <ol aria-label="Progress" className="grid grid-cols-3 gap-2">
+        {STEPS.map((step) => {
+          const isDone = step.number < currentStep;
+          const isActive = step.number === currentStep;
+          return (
+            <li
+              key={step.number}
+              aria-current={isActive ? 'step' : undefined}
+              className="flex flex-col items-center gap-1.5 text-center"
+            >
+              <span
+                className={[
+                  'flex h-10 w-10 items-center justify-center rounded-full text-sm font-bold',
+                  isDone || isActive ? 'bg-primary-700 text-white' : 'bg-slate-200 text-slate-600',
+                  isActive ? 'ring-4 ring-accent-300' : '',
+                ].join(' ')}
+              >
+                {isDone ? <Check className="h-5 w-5" aria-hidden="true" /> : step.number}
+              </span>
+              <span className={['text-xs font-semibold sm:text-sm', isActive ? 'text-slate-900' : 'text-slate-600'].join(' ')}>
+                {step.label}
+              </span>
+            </li>
+          );
+        })}
+      </ol>
+
+      <section className="flex flex-col gap-4">
+        <label htmlFor="context-text" className="text-lg font-semibold text-slate-900">
           Tell us about your family and land in your own words
         </label>
         <textarea
           id="context-text"
           value={text}
           onChange={(e) => setText(e.target.value)}
-          className="min-h-[10rem] w-full rounded-md border border-gray-300 bg-white p-3 text-base focus:border-green-700 focus:outline-none"
+          placeholder="For example: I am a farmer in Andhra Pradesh. I own 2 acres in my name. I am 45 years old. Our family earns about 1 lakh a year and we have a bank account."
+          className="min-h-[12rem] w-full rounded-2xl border-2 border-slate-300 bg-white p-4 text-base text-slate-900 shadow-soft placeholder:text-slate-400 focus:border-primary-600 focus:outline-none focus:ring-4 focus:ring-accent-300"
         />
 
         <div>
-          <p className="mb-2 text-sm text-gray-600">Or try a sample story:</p>
-          <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-            {SAMPLE_PROFILES.map((sample) => (
+          <p className="mb-3 flex items-center gap-2 text-sm font-medium text-slate-600">
+            <Sparkles className="h-4 w-4 text-accent-700" aria-hidden="true" />
+            Or try a sample story:
+          </p>
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            {SAMPLE_PROFILES.map((sample, index) => (
               <button
                 key={sample.id}
                 type="button"
                 onClick={() => loadSample(sample.story)}
-                className={buttonBase}
+                className="flex min-h-[48px] w-full items-center gap-3 rounded-2xl border border-slate-200 bg-white p-3 text-left text-base font-medium text-slate-800 shadow-soft transition duration-150 hover:border-primary-500 hover:bg-primary-50 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-accent-300"
               >
-                {sample.label}
+                <span
+                  aria-hidden="true"
+                  className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-primary-50 text-2xl"
+                >
+                  {SAMPLE_AVATARS[index % SAMPLE_AVATARS.length]}
+                </span>
+                <span className="flex min-w-0 flex-col">
+                  <span className="text-xs font-semibold uppercase tracking-wide text-accent-700">Try this story</span>
+                  <span>{sample.label}</span>
+                </span>
               </button>
             ))}
           </div>
         </div>
 
-        <button
-          type="button"
-          onClick={submit}
-          disabled={text.trim() === ''}
-          className="min-h-11 rounded-md bg-green-700 px-6 py-2 text-base font-semibold text-white hover:bg-green-800 disabled:cursor-not-allowed disabled:bg-gray-300"
-        >
+        <Button type="button" onClick={submit} disabled={text.trim() === ''} className="w-full sm:w-auto">
           Find schemes
-        </button>
+          <ArrowRight className="h-5 w-5" aria-hidden="true" />
+        </Button>
       </section>
 
       {submitted && (
         <section className="flex flex-col gap-3">
-          <h2 className="text-lg font-semibold text-gray-900">I understood</h2>
+          <SectionHeader
+            icon={<ListChecks className="h-5 w-5" aria-hidden="true" />}
+            title="I understood"
+          />
           {understoodFields.length === 0 ? (
-            <p className="text-sm text-gray-600">
+            <p className="text-base text-slate-600">
               We could not pick out any details yet. Add a little more about your family or land.
             </p>
           ) : (
@@ -319,7 +368,7 @@ export default function Home() {
                 return (
                   <li
                     key={field}
-                    className="flex flex-col gap-2 rounded-lg border border-green-200 bg-green-50 p-3"
+                    className="flex flex-col gap-3 rounded-2xl border border-primary-200 bg-primary-50 p-4"
                   >
                     {isEditing ? (
                       <FieldEditor
@@ -332,29 +381,27 @@ export default function Home() {
                         onCancel={() => setEditingField(null)}
                       />
                     ) : (
-                      <div className="flex flex-wrap items-center justify-between gap-2">
-                        <span className="text-base font-medium text-gray-900">
+                      <div className="flex flex-col gap-3">
+                        <span className="text-base font-semibold text-slate-900">
                           {meta.label}: {formatValue(field, value, meta)}
                         </span>
-                        <div className="flex gap-2">
-                          <button
-                            type="button"
+                        <div className="flex flex-wrap gap-2">
+                          <Chip
+                            icon={<Pencil className="h-4 w-4" aria-hidden="true" />}
                             onClick={() => setEditingField(field)}
-                            className="min-h-11 rounded-md border border-gray-300 bg-white px-4 text-sm font-semibold text-gray-700 hover:bg-gray-50"
                           >
                             Edit
-                          </button>
-                          <button
-                            type="button"
+                          </Chip>
+                          <Chip
+                            icon={<X className="h-4 w-4" aria-hidden="true" />}
                             onClick={() => removeField(key)}
-                            className="min-h-11 rounded-md border border-red-300 bg-white px-4 text-sm font-semibold text-red-700 hover:bg-red-50"
                           >
                             Remove
-                          </button>
+                          </Chip>
                         </div>
                       </div>
                     )}
-                    <p className="text-xs text-gray-600">from: &quot;{evidence[field]}&quot;</p>
+                    <p className="text-sm text-slate-600">from: &quot;{evidence[field]}&quot;</p>
                   </li>
                 );
               })}
@@ -365,44 +412,62 @@ export default function Home() {
 
       {questions.length > 0 && (
         <section className="flex flex-col gap-4">
-          <h2 className="text-lg font-semibold text-gray-900">A few quick questions</h2>
-          {questions.map((question) => (
-            <div key={question.field} className="flex flex-col gap-2">
-              <p className="text-base font-medium text-gray-900">{question.text}</p>
-              {question.helper && <p className="text-xs text-gray-500">{question.helper}</p>}
-              {question.input === 'number' ? (
-                <NumberQuestion
-                  question={question}
-                  onAnswer={(value) => answerQuestion(question.field, value)}
-                  onNotSure={() => answerQuestion(question.field, null)}
-                />
-              ) : (
-                <div className="flex flex-wrap gap-2">
-                  {question.options.map((option) => (
-                    <button
-                      key={option.label}
-                      type="button"
-                      onClick={() => answerQuestion(question.field, option.value)}
-                      className={chipOptionClass}
-                    >
-                      {option.label}
-                    </button>
-                  ))}
+          <SectionHeader title="A few quick questions" />
+          <Card className="flex flex-col gap-6 p-4 sm:p-6">
+            {questions.map((question) => (
+              <div
+                key={question.field}
+                className="flex flex-col gap-3 border-b border-slate-100 pb-6 last:border-b-0 last:pb-0"
+              >
+                <div className="flex flex-col gap-1">
+                  <p className="text-lg font-semibold text-slate-900">{question.text}</p>
+                  {question.helper && <p className="text-sm text-slate-600">{question.helper}</p>}
                 </div>
-              )}
-            </div>
-          ))}
+                {question.input === 'number' ? (
+                  <NumberQuestion
+                    question={question}
+                    onAnswer={(value) => answerQuestion(question.field, value)}
+                    onNotSure={() => answerQuestion(question.field, null)}
+                  />
+                ) : (
+                  <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
+                    {question.options.map((option) => (
+                      <Button
+                        key={option.label}
+                        variant="ghost"
+                        onClick={() => answerQuestion(question.field, option.value)}
+                        className="w-full border-2 border-primary-700"
+                      >
+                        {option.label}
+                      </Button>
+                    ))}
+                    {!question.options.some((o) => /not sure/i.test(o.label)) && (
+                      <Button
+                        variant="ghost"
+                        onClick={() => answerQuestion(question.field, null)}
+                        className="w-full border-2 border-slate-400"
+                      >
+                        Not sure
+                      </Button>
+                    )}
+                  </div>
+                )}
+              </div>
+            ))}
+          </Card>
         </section>
       )}
 
       <div>
         <Link
           to="/results"
-          className="inline-flex min-h-11 items-center text-base font-semibold text-green-700 underline hover:text-green-800"
+          className="inline-flex min-h-[48px] w-full items-center justify-center gap-2 rounded-xl border-2 border-primary-700 px-5 text-base font-semibold text-primary-700 hover:bg-primary-50 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-accent-300 sm:w-auto"
         >
           See my results
+          <ArrowRight className="h-5 w-5" aria-hidden="true" />
         </Link>
       </div>
     </div>
   );
 }
+
