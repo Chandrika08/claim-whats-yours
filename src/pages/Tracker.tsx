@@ -124,13 +124,13 @@ export default function Tracker() {
         <EmptyState
           icon={<ListChecks className="h-7 w-7" aria-hidden="true" />}
           title="Nothing tracked yet"
-          description="Find schemes you may be eligible for, then come back here to track each application and its deadline."
+          description="Check your likely schemes on the Results page first, then add each one here to track its application and deadline."
           action={
             <Link
-              to="/"
-              className="inline-flex min-h-[48px] items-center justify-center gap-2 rounded-xl bg-primary-700 px-5 py-2.5 font-semibold text-white shadow-soft hover:bg-primary-800 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-accent-300"
+              to="/results"
+              className="inline-flex min-h-[48px] items-center justify-center gap-2 rounded-xl bg-primary-700 px-5 py-2.5 font-semibold text-white shadow-soft hover:bg-primary-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
             >
-              Find schemes
+              See my results
               <ArrowRight className="h-5 w-5" aria-hidden="true" />
             </Link>
           }

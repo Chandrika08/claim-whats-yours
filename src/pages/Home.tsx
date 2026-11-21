@@ -124,7 +124,7 @@ function FieldEditor({ value, meta, onSave, onCancel }: FieldEditorProps) {
   const canSave = meta.kind === 'number' ? parsed !== null : draft.trim() !== '';
 
   const inputClass =
-    'min-h-12 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-base focus:border-green-700 focus:outline-none';
+    'min-h-12 w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-base focus:border-primary-600 focus:outline-none';
 
   return (
     <div className="flex w-full flex-col gap-2 sm:flex-row sm:items-center">
@@ -168,14 +168,14 @@ function FieldEditor({ value, meta, onSave, onCancel }: FieldEditorProps) {
           type="button"
           disabled={!canSave}
           onClick={() => onSave(parsed)}
-          className="min-h-12 rounded-md bg-green-700 px-4 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:bg-gray-300"
+          className="min-h-12 rounded-md bg-primary-700 px-4 text-sm font-semibold text-white hover:bg-primary-800 disabled:cursor-not-allowed disabled:bg-slate-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
         >
           Save
         </button>
         <button
           type="button"
           onClick={onCancel}
-          className="min-h-12 rounded-md border border-gray-300 px-4 text-sm font-semibold text-gray-700 hover:bg-gray-50"
+          className="min-h-12 rounded-md border border-slate-300 px-4 text-sm font-semibold text-slate-700 hover:bg-primary-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
         >
           Cancel
         </button>
@@ -213,14 +213,14 @@ function NumberQuestion({ question, onAnswer, onNotSure }: NumberQuestionProps) 
           onClick={() => {
             if (parsed !== null) onAnswer(parsed);
           }}
-          className="min-h-12 rounded-md bg-green-700 px-4 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:bg-gray-300"
+          className="min-h-12 rounded-md bg-primary-700 px-4 text-sm font-semibold text-white hover:bg-primary-800 disabled:cursor-not-allowed disabled:bg-slate-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
         >
           Save answer
         </button>
         <button
           type="button"
           onClick={onNotSure}
-          className="min-h-12 rounded-md border border-gray-300 px-4 text-sm font-semibold text-gray-700 hover:bg-gray-50"
+          className="min-h-12 rounded-md border border-slate-300 px-4 text-sm font-semibold text-slate-700 hover:bg-primary-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
         >
           Not sure
         </button>
@@ -311,7 +311,7 @@ export default function Home() {
           value={text}
           onChange={(e) => setText(e.target.value)}
           placeholder="For example: I am a farmer in Andhra Pradesh. I own 2 acres in my name. I am 45 years old. Our family earns about 1 lakh a year and we have a bank account."
-          className="min-h-[12rem] w-full rounded-2xl border-2 border-slate-300 bg-white p-4 text-base text-slate-900 shadow-soft placeholder:text-slate-400 focus:border-primary-600 focus:outline-none focus:ring-4 focus:ring-accent-300"
+          className="min-h-[12rem] w-full rounded-2xl border-2 border-slate-300 bg-white p-4 text-base text-slate-900 shadow-soft placeholder:text-slate-500 focus:border-primary-600 focus:outline-none focus:ring-4 focus:ring-accent-300"
         />
 
         <div>
@@ -325,7 +325,7 @@ export default function Home() {
                 key={sample.id}
                 type="button"
                 onClick={() => loadSample(sample.story)}
-                className="flex min-h-[48px] w-full items-center gap-3 rounded-2xl border border-slate-200 bg-white p-3 text-left text-base font-medium text-slate-800 shadow-soft transition duration-150 hover:border-primary-500 hover:bg-primary-50 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-accent-300"
+                className="flex min-h-[48px] w-full items-center gap-3 rounded-2xl border border-slate-200 bg-white p-3 text-left text-base font-medium text-slate-800 shadow-soft transition duration-150 hover:border-primary-500 hover:bg-primary-50 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
               >
                 <span
                   aria-hidden="true"
@@ -462,7 +462,7 @@ export default function Home() {
         <div>
           <Link
             to="/results"
-            className="inline-flex min-h-[48px] w-full items-center justify-center gap-2 rounded-xl border-2 border-primary-700 px-5 text-base font-semibold text-primary-700 hover:bg-primary-50 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-accent-300 sm:w-auto"
+            className="inline-flex min-h-[48px] w-full items-center justify-center gap-2 rounded-xl border-2 border-primary-700 px-5 text-base font-semibold text-primary-700 hover:bg-primary-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 sm:w-auto"
           >
             See my results
             <ArrowRight className="h-5 w-5" aria-hidden="true" />

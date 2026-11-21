@@ -15,7 +15,7 @@ const MENU_ID = 'primary-nav-menu';
 function linkClass({ isActive }: { isActive: boolean }) {
   return [
     'inline-flex min-h-[48px] items-center rounded-full px-4 py-2 text-base font-semibold transition duration-150',
-    'focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-accent-300',
+    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2',
     isActive
       ? 'bg-primary-700 text-white shadow-soft'
       : 'text-slate-700 hover:bg-primary-50 hover:text-primary-800',
@@ -49,7 +49,7 @@ export default function Nav() {
           aria-controls={MENU_ID}
           aria-label={open ? 'Close menu' : 'Open menu'}
           onClick={() => setOpen((prev) => !prev)}
-          className="inline-flex min-h-[48px] min-w-[48px] items-center justify-center rounded-xl text-primary-800 transition duration-150 hover:bg-primary-50 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-accent-300 md:hidden"
+          className="inline-flex min-h-[48px] min-w-[48px] items-center justify-center rounded-xl text-primary-800 transition duration-150 hover:bg-primary-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 md:hidden"
         >
           {open ? <X aria-hidden="true" className="h-6 w-6" /> : <Menu aria-hidden="true" className="h-6 w-6" />}
         </button>

@@ -27,8 +27,8 @@ const STATUS_BADGE: Record<MatchResult['status'], { label: string; tone: BadgeTo
 };
 
 const RULE_ICON: Record<RuleResult['result'], { icon: ReactNode; className: string }> = {
-  pass: { icon: <Check className="h-5 w-5" aria-hidden="true" />, className: 'text-green-700 bg-green-100' },
-  fail: { icon: <X className="h-5 w-5" aria-hidden="true" />, className: 'text-red-700 bg-red-100' },
+  pass: { icon: <Check className="h-5 w-5" aria-hidden="true" />, className: 'text-eligible bg-primary-100' },
+  fail: { icon: <X className="h-5 w-5" aria-hidden="true" />, className: 'text-notEligible bg-slate-200' },
   unknown: { icon: <HelpCircle className="h-5 w-5" aria-hidden="true" />, className: 'text-slate-600 bg-slate-200' },
 };
 
@@ -59,7 +59,7 @@ function DocumentItem({
       <label
         className={[
           'flex min-h-[48px] cursor-pointer items-start gap-3 rounded-xl border p-3 transition duration-150',
-          checked ? 'border-green-200 bg-green-50' : 'border-slate-200 bg-white hover:bg-primary-50',
+          checked ? 'border-primary-200 bg-primary-50' : 'border-slate-200 bg-white hover:bg-primary-50',
         ].join(' ')}
       >
         <input
@@ -169,7 +169,7 @@ export default function SchemeCard({ scheme, result }: { scheme: Scheme; result:
               href={scheme.official_url}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex min-h-[44px] items-center gap-1.5 rounded-lg font-semibold text-primary-700 underline-offset-2 hover:underline focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-accent-300"
+              className="inline-flex min-h-[44px] items-center gap-1.5 rounded-lg font-semibold text-primary-700 underline-offset-2 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
             >
               Official website
               <ExternalLink className="h-4 w-4" aria-hidden="true" />
@@ -177,7 +177,7 @@ export default function SchemeCard({ scheme, result }: { scheme: Scheme; result:
           ) : null}
           <span>Last verified: {scheme.last_verified}</span>
           {stale && (
-            <span className="inline-flex items-center gap-1 rounded-full bg-amber-100 px-2.5 py-0.5 text-xs font-semibold text-amber-800">
+            <span className="inline-flex items-center gap-1 rounded-full bg-accent-100 px-2.5 py-0.5 text-xs font-semibold text-possible">
               <CircleAlert className="h-3.5 w-3.5" aria-hidden="true" />
               Needs re-verification
             </span>

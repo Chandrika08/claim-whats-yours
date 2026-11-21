@@ -19,7 +19,7 @@ export function Button({ variant = 'primary', className = '', type = 'button', .
       className={[
         'inline-flex min-h-[48px] items-center justify-center gap-2 rounded-xl px-5 py-2.5 font-semibold',
         'transition duration-150 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50',
-        'focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-accent-300 focus-visible:ring-offset-2',
+        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2',
         variantClasses[variant],
         className,
       ].join(' ')}

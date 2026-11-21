@@ -42,7 +42,7 @@ export default function Results() {
           action={
             <Link
               to="/"
-              className="inline-flex min-h-[48px] items-center justify-center rounded-xl bg-primary-700 px-5 py-2.5 font-semibold text-white shadow-soft hover:bg-primary-800 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-accent-300 focus-visible:ring-offset-2"
+              className="inline-flex min-h-[48px] items-center justify-center rounded-xl bg-primary-700 px-5 py-2.5 font-semibold text-white shadow-soft hover:bg-primary-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
             >
               Go to Home
             </Link>
@@ -96,7 +96,7 @@ export default function Results() {
             <div key={scheme.id} className="flex flex-col gap-2">
               <SchemeCard scheme={scheme} result={result} />
               {result.missingFields.length > 0 && (
-                <p className="rounded-xl bg-amber-50 px-4 py-2 text-sm font-medium text-amber-800">
+                <p className="rounded-xl bg-accent-50 px-4 py-2 text-sm font-medium text-possible">
                   Still missing: {result.missingFields.join(', ')}
                 </p>
               )}

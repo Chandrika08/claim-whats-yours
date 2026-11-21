@@ -23,7 +23,7 @@ export function Collapsible({ title, defaultOpen = false, children, id, classNam
         aria-expanded={open}
         aria-controls={contentId}
         onClick={() => setOpen((prev) => !prev)}
-        className="flex min-h-[48px] w-full items-center justify-between gap-3 rounded-2xl px-4 py-3 text-left font-semibold text-slate-900 transition duration-150 hover:bg-primary-50 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-accent-300"
+        className="flex min-h-[48px] w-full items-center justify-between gap-3 rounded-2xl px-4 py-3 text-left font-semibold text-slate-900 transition duration-150 hover:bg-primary-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
       >
         <span>{title}</span>
         <ChevronDown

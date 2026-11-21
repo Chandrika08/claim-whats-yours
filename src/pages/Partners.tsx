@@ -295,22 +295,22 @@ export default function Partners() {
             <dl className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               <div className="flex flex-col gap-1 rounded-xl bg-primary-50 p-4">
                 <dt className="text-sm font-semibold text-slate-700">Total scheme matches</dt>
-                <dd className="text-2xl font-bold text-slate-900">{formatNumber(totalMatches)}</dd>
+                <dd className="break-words text-2xl font-bold text-slate-900">{formatNumber(totalMatches)}</dd>
                 <dd className="text-sm text-slate-600">Families reached × average schemes matched per family</dd>
               </div>
               <div className="flex flex-col gap-1 rounded-xl bg-primary-50 p-4">
                 <dt className="text-sm font-semibold text-slate-700">Estimated annual benefit unlocked</dt>
-                <dd className="text-2xl font-bold text-slate-900">{formatNumber(annualBenefit, 'Rs ')}</dd>
+                <dd className="break-words text-2xl font-bold text-slate-900">{formatNumber(annualBenefit, 'Rs ')}</dd>
                 <dd className="text-sm text-slate-600">Total scheme matches × average benefit value per scheme</dd>
               </div>
               <div className="flex flex-col gap-1 rounded-xl bg-primary-50 p-4">
                 <dt className="text-sm font-semibold text-slate-700">Middleman fees avoided</dt>
-                <dd className="text-2xl font-bold text-slate-900">{formatNumber(middlemanAvoided, 'Rs ')}</dd>
+                <dd className="break-words text-2xl font-bold text-slate-900">{formatNumber(middlemanAvoided, 'Rs ')}</dd>
                 <dd className="text-sm text-slate-600">Families reached × middleman fee avoided per family</dd>
               </div>
               <div className="flex flex-col gap-1 rounded-xl bg-primary-50 p-4">
                 <dt className="text-sm font-semibold text-slate-700">NGO / CSR price at this reach</dt>
-                <dd className="text-2xl font-bold text-slate-900">{formatNumber(ngoFee, 'Rs ')}</dd>
+                <dd className="break-words text-2xl font-bold text-slate-900">{formatNumber(ngoFee, 'Rs ')}</dd>
                 <dd className="text-sm text-slate-600">Families reached × NGO / CSR price per family per year</dd>
               </div>
             </dl>

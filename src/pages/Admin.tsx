@@ -205,8 +205,8 @@ export default function Admin() {
       {header}
 
       {loadError && (
-        <div role="alert" className="rounded-xl border border-possible bg-accent-50 p-4">
-          <p className="font-semibold text-possible">{loadError}</p>
+        <div role="alert" className="rounded-xl border border-notEligible bg-white p-4">
+          <p className="font-semibold text-notEligible">{loadError}</p>
         </div>
       )}
 
@@ -220,7 +220,7 @@ export default function Admin() {
         {message && (
           <p
             role="status"
-            className={message.tone === 'ok' ? 'font-semibold text-primary-800' : 'font-semibold text-possible'}
+            className={message.tone === 'ok' ? 'font-semibold text-primary-800' : 'font-semibold text-notEligible'}
           >
             {message.text}
           </p>
@@ -286,11 +286,11 @@ export default function Admin() {
               className={[
                 'min-h-[360px] w-full rounded-xl bg-cream p-3 font-mono text-sm text-slate-900',
                 'border focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-accent-300',
-                check.error ? 'border-possible' : 'border-primary-200',
+                check.error ? 'border-notEligible' : 'border-primary-200',
               ].join(' ')}
             />
             {check.error ? (
-              <p id={ERROR_ID} role="alert" className="text-sm font-semibold text-possible">
+              <p id={ERROR_ID} role="alert" className="text-sm font-semibold text-notEligible">
                 {check.error}
               </p>
             ) : (
