@@ -1,4 +1,4 @@
-# Claim What's Yours
+# Hakku (Claim What's Yours)
 
 Live demo: [https://claim-whats-yours.netlify.app](https://claim-whats-yours.netlify.app)
 

@@ -67,7 +67,8 @@ export default function Nav() {
     <header className="sticky top-0 z-40 bg-white shadow-soft">
       <nav className="mx-auto flex max-w-2xl items-center justify-between gap-2 px-4 py-3">
         <NavLink to="/" end onClick={close} className="text-lg font-bold text-primary-800">
-          Claim What&apos;s Yours
+          Hakku
+          <span className="hidden sm:inline ml-2 text-xs font-normal text-primary-700">Claim what&apos;s yours</span>
         </NavLink>
 
         <ul className="hidden gap-1 md:flex">

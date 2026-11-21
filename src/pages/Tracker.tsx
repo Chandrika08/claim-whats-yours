@@ -97,7 +97,7 @@ export default function Tracker() {
   return (
     <div className="mx-auto flex w-full max-w-2xl flex-col gap-6 px-4 py-6 sm:py-10">
       <header className="flex flex-col gap-2">
-        <p className="text-xs font-semibold uppercase tracking-wide text-accent-700">Claim What's Yours</p>
+        <p className="text-xs font-semibold uppercase tracking-wide text-accent-700">HAKKU</p>
         <h1 className="text-3xl font-extrabold leading-tight text-slate-900 sm:text-4xl">Your application tracker</h1>
         <p className="text-base leading-relaxed text-slate-600">
           Keep track of where each scheme stands. This list is saved only in this browser.
