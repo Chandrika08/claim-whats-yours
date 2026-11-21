@@ -8,86 +8,100 @@ import { nextQuestions, type Question } from '../lib/questions';
 import { loadSchemes } from '../lib/schemes';
 import type { Profile } from '../types';
 import sampleData from '../data/sample-profiles.json';
+import { useLanguage } from '../i18n/useLanguage';
+import type { TranslateFn } from '../i18n/LanguageContext';
+import type { MessageKey } from '../i18n/messages';
+import { optionLabel, questionCopy } from '../i18n/questionText';
 
-type Option = { value: string; label: string };
+type Option = { value: string; labelKey: MessageKey };
 
 type FieldMeta = {
-  label: string;
+  labelKey?: MessageKey;
   kind: 'number' | 'boolean' | 'enum' | 'text';
   options?: Option[];
-  unit?: string;
+  unitKey?: MessageKey;
 };
 
 const GENDER_OPTIONS: Option[] = [
-  { value: 'male', label: 'Male' },
-  { value: 'female', label: 'Female' },
-  { value: 'other', label: 'Other' },
+  { value: 'male', labelKey: 'option.male' },
+  { value: 'female', labelKey: 'option.female' },
+  { value: 'other', labelKey: 'option.other' },
 ];
 
 const OCCUPATION_OPTIONS: Option[] = [
-  { value: 'farmer', label: 'Farmer' },
-  { value: 'agricultural_labourer', label: 'Farm labourer' },
-  { value: 'student', label: 'Student' },
-  { value: 'other', label: 'Other' },
+  { value: 'farmer', labelKey: 'option.farmer' },
+  { value: 'agricultural_labourer', labelKey: 'option.labourer' },
+  { value: 'student', labelKey: 'option.student' },
+  { value: 'other', labelKey: 'option.other' },
 ];
 
 const LAND_OWNERSHIP_OPTIONS: Option[] = [
-  { value: 'owner', label: 'In your name' },
-  { value: 'tenant', label: 'Leased' },
-  { value: 'none', label: 'No land' },
+  { value: 'owner', labelKey: 'option.inYourName' },
+  { value: 'tenant', labelKey: 'option.leased' },
+  { value: 'none', labelKey: 'option.noLand' },
 ];
 
 const YES_NO_OPTIONS: Option[] = [
-  { value: 'yes', label: 'Yes' },
-  { value: 'no', label: 'No' },
+  { value: 'yes', labelKey: 'option.yes' },
+  { value: 'no', labelKey: 'option.no' },
 ];
 
 const FIELD_META: Partial<Record<keyof Profile, FieldMeta>> = {
-  state: { label: 'State', kind: 'text' },
-  age: { label: 'Age', kind: 'number', unit: 'years' },
-  gender: { label: 'Gender', kind: 'enum', options: GENDER_OPTIONS },
-  occupation: { label: 'Work', kind: 'enum', options: OCCUPATION_OPTIONS },
-  land_acres: { label: 'Land', kind: 'number', unit: 'acres' },
-  land_ownership: { label: 'Land type', kind: 'enum', options: LAND_OWNERSHIP_OPTIONS },
-  annual_household_income: { label: 'Family income', kind: 'number', unit: 'a year' },
-  has_bank_account: { label: 'Savings bank account', kind: 'boolean' },
-  household_has_senior: { label: 'Someone aged 60+ at home', kind: 'boolean' },
-  household_has_student: { label: 'Student at home', kind: 'boolean' },
-  is_income_taxpayer: { label: 'Income tax paid last year', kind: 'boolean' },
-  is_govt_employee: { label: 'Government job in family', kind: 'boolean' },
-  family_excluded_category: { label: 'Official, professional or high pension in family', kind: 'boolean' },
-  in_land_records_aug_2019: { label: 'In land records on 1 Aug 2019', kind: 'boolean' },
-  covered_by_other_pension: { label: 'Covered by another pension', kind: 'boolean' },
-  is_widow: { label: 'Widow', kind: 'boolean' },
-  is_bpl: { label: 'Below poverty line (BPL)', kind: 'boolean' },
-  lives_in_rural_area: { label: 'Lives in a rural area', kind: 'boolean' },
-  is_destitute: { label: 'Little or no means of living', kind: 'boolean' },
+  state: { labelKey: 'field.label.state', kind: 'text' },
+  age: { labelKey: 'field.label.age', kind: 'number', unitKey: 'unit.years' },
+  gender: { labelKey: 'field.label.gender', kind: 'enum', options: GENDER_OPTIONS },
+  occupation: { labelKey: 'field.label.work', kind: 'enum', options: OCCUPATION_OPTIONS },
+  land_acres: { labelKey: 'field.label.land', kind: 'number', unitKey: 'unit.acres' },
+  land_ownership: { labelKey: 'field.label.landType', kind: 'enum', options: LAND_OWNERSHIP_OPTIONS },
+  annual_household_income: { labelKey: 'field.label.income', kind: 'number' },
+  has_bank_account: { labelKey: 'field.label.bankAccount', kind: 'boolean' },
+  household_has_senior: { labelKey: 'field.label.senior', kind: 'boolean' },
+  household_has_student: { labelKey: 'field.label.student', kind: 'boolean' },
+  is_income_taxpayer: { labelKey: 'field.label.taxpayer', kind: 'boolean' },
+  is_govt_employee: { labelKey: 'field.label.govtJob', kind: 'boolean' },
+  family_excluded_category: { labelKey: 'field.label.excluded', kind: 'boolean' },
+  in_land_records_aug_2019: { labelKey: 'field.label.landRecords', kind: 'boolean' },
+  covered_by_other_pension: { labelKey: 'field.label.otherPension', kind: 'boolean' },
+  is_widow: { labelKey: 'field.label.widow', kind: 'boolean' },
+  is_bpl: { labelKey: 'field.label.bpl', kind: 'boolean' },
+  lives_in_rural_area: { labelKey: 'field.label.rural', kind: 'boolean' },
+  is_destitute: { labelKey: 'field.label.destitute', kind: 'boolean' },
 };
 
 const SAMPLE_PROFILES: { id: string; label: string; story: string }[] = sampleData.profiles;
 
+const SAMPLE_LABEL_KEYS: Record<string, MessageKey> = {
+  p1: 'sample.p1.label',
+  p2: 'sample.p2.label',
+  p3: 'sample.p3.label',
+  p4: 'sample.p4.label',
+};
+
 const SAMPLE_AVATARS = ['🧑‍🌾', '👩‍🌾', '🧓', '🎓'];
 
-const STEPS = [
-  { number: 1, label: 'Tell us' },
-  { number: 2, label: 'Confirm' },
-  { number: 3, label: 'See schemes' },
+const STEPS: { number: number; labelKey: MessageKey }[] = [
+  { number: 1, labelKey: 'progress.tellUs' },
+  { number: 2, labelKey: 'progress.confirm' },
+  { number: 3, labelKey: 'progress.seeSchemes' },
 ];
 
-const schemesFallbackMeta: FieldMeta = { label: '', kind: 'text' };
+const schemesFallbackMeta: FieldMeta = { kind: 'text' };
 
 function metaFor(field: string): FieldMeta {
   const meta = FIELD_META[field as keyof Profile];
-  return meta ?? { ...schemesFallbackMeta, label: field };
+  return meta ?? schemesFallbackMeta;
 }
 
-function formatValue(field: string, value: unknown, meta: FieldMeta): string {
-  if (typeof value === 'boolean') return value ? 'Yes' : 'No';
+function formatValue(field: string, value: unknown, meta: FieldMeta, t: TranslateFn): string {
+  if (typeof value === 'boolean') return value ? t('option.yes') : t('option.no');
   if (typeof value === 'number') {
-    if (field === 'annual_household_income') return `Rs ${value.toLocaleString('en-IN')} a year`;
-    return meta.unit ? `${value} ${meta.unit}` : String(value);
+    if (field === 'annual_household_income') return t('format.incomePerYear', { amount: value.toLocaleString('en-IN') });
+    return meta.unitKey ? `${value} ${t(meta.unitKey)}` : String(value);
   }
-  if (meta.options) return meta.options.find((o) => o.value === value)?.label ?? String(value);
+  if (meta.options) {
+    const option = meta.options.find((o) => o.value === value);
+    return option ? t(option.labelKey) : String(value);
+  }
   return String(value);
 }
 
@@ -107,11 +121,13 @@ function initialDraft(value: unknown): string {
 type FieldEditorProps = {
   value: unknown;
   meta: FieldMeta;
+  label: string;
   onSave: (value: unknown) => void;
   onCancel: () => void;
 };
 
-function FieldEditor({ value, meta, onSave, onCancel }: FieldEditorProps) {
+function FieldEditor({ value, meta, label, onSave, onCancel }: FieldEditorProps) {
+  const { t } = useLanguage();
   const [draft, setDraft] = useState(() => initialDraft(value));
   const options = meta.kind === 'boolean' ? YES_NO_OPTIONS : meta.options ?? [];
 
@@ -134,7 +150,7 @@ function FieldEditor({ value, meta, onSave, onCancel }: FieldEditorProps) {
           inputMode="decimal"
           min={0}
           step="any"
-          aria-label={meta.label}
+          aria-label={label}
           value={draft}
           onChange={(e) => setDraft(e.target.value)}
           className={inputClass}
@@ -143,7 +159,7 @@ function FieldEditor({ value, meta, onSave, onCancel }: FieldEditorProps) {
       {meta.kind === 'text' && (
         <input
           type="text"
-          aria-label={meta.label}
+          aria-label={label}
           value={draft}
           onChange={(e) => setDraft(e.target.value)}
           className={inputClass}
@@ -151,14 +167,14 @@ function FieldEditor({ value, meta, onSave, onCancel }: FieldEditorProps) {
       )}
       {(meta.kind === 'boolean' || meta.kind === 'enum') && (
         <select
-          aria-label={meta.label}
+          aria-label={label}
           value={draft}
           onChange={(e) => setDraft(e.target.value)}
           className={inputClass}
         >
           {options.map((o) => (
             <option key={o.value} value={o.value}>
-              {o.label}
+              {t(o.labelKey)}
             </option>
           ))}
         </select>
@@ -170,14 +186,14 @@ function FieldEditor({ value, meta, onSave, onCancel }: FieldEditorProps) {
           onClick={() => onSave(parsed)}
           className="min-h-12 rounded-md bg-primary-700 px-4 text-sm font-semibold text-white hover:bg-primary-800 disabled:cursor-not-allowed disabled:bg-slate-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
         >
-          Save
+          {t('field.save')}
         </button>
         <button
           type="button"
           onClick={onCancel}
           className="min-h-12 rounded-md border border-slate-300 px-4 text-sm font-semibold text-slate-700 hover:bg-primary-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
         >
-          Cancel
+          {t('field.cancel')}
         </button>
       </div>
     </div>
@@ -191,8 +207,10 @@ type NumberQuestionProps = {
 };
 
 function NumberQuestion({ question, onAnswer, onNotSure }: NumberQuestionProps) {
+  const { t, lang } = useLanguage();
   const [draft, setDraft] = useState('');
   const parsed = parseNumber(draft);
+  const text = questionCopy(question.field, lang).text ?? question.text;
 
   return (
     <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
@@ -201,7 +219,7 @@ function NumberQuestion({ question, onAnswer, onNotSure }: NumberQuestionProps) 
         inputMode="decimal"
         min={0}
         step="any"
-        aria-label={question.text}
+        aria-label={text}
         value={draft}
         onChange={(e) => setDraft(e.target.value)}
         className="min-h-12 w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-base focus:border-primary-600 focus:outline-none sm:max-w-xs"
@@ -215,14 +233,14 @@ function NumberQuestion({ question, onAnswer, onNotSure }: NumberQuestionProps) 
           }}
           className="min-h-12 rounded-md bg-primary-700 px-4 text-sm font-semibold text-white hover:bg-primary-800 disabled:cursor-not-allowed disabled:bg-slate-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
         >
-          Save answer
+          {t('field.saveAnswer')}
         </button>
         <button
           type="button"
           onClick={onNotSure}
           className="min-h-12 rounded-md border border-slate-300 px-4 text-sm font-semibold text-slate-700 hover:bg-primary-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
         >
-          Not sure
+          {t('option.notSure')}
         </button>
       </div>
     </div>
@@ -243,6 +261,7 @@ export default function Home() {
     removeField,
     answerQuestion,
   } = useProfile();
+  const { t, lang } = useLanguage();
 
   const [editingField, setEditingField] = useState<string | null>(null);
 
@@ -267,15 +286,14 @@ export default function Home() {
       <header className="flex flex-col gap-3">
         <p className="inline-flex items-center gap-2 text-2xl font-extrabold tracking-tight text-primary-800"><Sparkles className="h-5 w-5 text-accent-700" aria-hidden="true" />Hakku</p>
         <h1 className="text-3xl font-extrabold leading-tight text-slate-900 sm:text-4xl">
-          Missing a government scheme? Find the ones you are likely eligible for.
+          {t('home.heroTitle')}
         </h1>
         <p className="text-base leading-relaxed text-slate-600 sm:text-lg">
-          Like Ramesh, with 2 acres and a family of five, you may hear about schemes from neighbours without knowing
-          which apply. Describe your family and land in plain words, no middleman needed. This is not a guarantee.
+          {t('home.heroBody')}
         </p>
       </header>
 
-      <ol aria-label="Progress" className="grid grid-cols-3 gap-2">
+      <ol aria-label={t('progress.label')} className="grid grid-cols-3 gap-2">
         {STEPS.map((step) => {
           const isDone = step.number < currentStep;
           const isActive = step.number === currentStep;
@@ -295,7 +313,7 @@ export default function Home() {
                 {isDone ? <Check className="h-5 w-5" aria-hidden="true" /> : step.number}
               </span>
               <span className={['text-xs font-semibold sm:text-sm', isActive ? 'text-slate-900' : 'text-slate-600'].join(' ')}>
-                {step.label}
+                {t(step.labelKey)}
               </span>
             </li>
           );
@@ -304,20 +322,20 @@ export default function Home() {
 
       <section className="flex flex-col gap-4">
         <label htmlFor="context-text" className="text-lg font-semibold text-slate-900">
-          Tell us about your family and land in your own words
+          {t('home.contextLabel')}
         </label>
         <textarea
           id="context-text"
           value={text}
           onChange={(e) => setText(e.target.value)}
-          placeholder="For example: I am a farmer in Andhra Pradesh. I own 2 acres in my name. I am 45 years old. Our family earns about 1 lakh a year and we have a bank account."
+          placeholder={t('home.placeholder')}
           className="min-h-[12rem] w-full rounded-2xl border-2 border-slate-300 bg-white p-4 text-base text-slate-900 shadow-soft placeholder:text-slate-500 focus:border-primary-600 focus:outline-none focus:ring-4 focus:ring-accent-300"
         />
 
         <div>
           <p className="mb-3 flex items-center gap-2 text-sm font-medium text-slate-600">
             <Sparkles className="h-4 w-4 text-accent-700" aria-hidden="true" />
-            Or try a sample story:
+            {t('home.sampleIntro')}
           </p>
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             {SAMPLE_PROFILES.map((sample, index) => (
@@ -334,8 +352,8 @@ export default function Home() {
                   {SAMPLE_AVATARS[index % SAMPLE_AVATARS.length]}
                 </span>
                 <span className="flex min-w-0 flex-col">
-                  <span className="text-xs font-semibold uppercase tracking-wide text-accent-700">Try this story</span>
-                  <span>{sample.label}</span>
+                  <span className="text-xs font-semibold uppercase tracking-wide text-accent-700">{t('story.try')}</span>
+                  <span>{SAMPLE_LABEL_KEYS[sample.id] ? t(SAMPLE_LABEL_KEYS[sample.id]) : sample.label}</span>
                 </span>
               </button>
             ))}
@@ -343,7 +361,7 @@ export default function Home() {
         </div>
 
         <Button type="button" onClick={submit} disabled={text.trim() === ''} className="w-full sm:w-auto">
-          Find schemes
+          {t('home.findSchemes')}
           <ArrowRight className="h-5 w-5" aria-hidden="true" />
         </Button>
       </section>
@@ -352,17 +370,18 @@ export default function Home() {
         <section className="flex flex-col gap-3">
           <SectionHeader
             icon={<ListChecks className="h-5 w-5" aria-hidden="true" />}
-            title="I understood"
+            title={t('home.understood')}
           />
           {understoodFields.length === 0 ? (
             <p className="text-base text-slate-600">
-              We could not pick out any details yet. Add a little more about your family or land.
+              {t('home.noDetails')}
             </p>
           ) : (
             <ul className="flex flex-col gap-3">
               {understoodFields.map((field) => {
                 const key = field as keyof Profile;
                 const meta = metaFor(field);
+                const label = meta.labelKey ? t(meta.labelKey) : field;
                 const value = profile[key];
                 const isEditing = editingField === field;
                 return (
@@ -374,6 +393,7 @@ export default function Home() {
                       <FieldEditor
                         value={value}
                         meta={meta}
+                        label={label}
                         onSave={(newValue) => {
                           setField(key, newValue);
                           setEditingField(null);
@@ -383,25 +403,25 @@ export default function Home() {
                     ) : (
                       <div className="flex flex-col gap-3">
                         <span className="text-base font-semibold text-slate-900">
-                          {meta.label}: {formatValue(field, value, meta)}
+                          {label}: {formatValue(field, value, meta, t)}
                         </span>
                         <div className="flex flex-wrap gap-2">
                           <Chip
                             icon={<Pencil className="h-4 w-4" aria-hidden="true" />}
                             onClick={() => setEditingField(field)}
                           >
-                            Edit
+                            {t('field.edit')}
                           </Chip>
                           <Chip
                             icon={<X className="h-4 w-4" aria-hidden="true" />}
                             onClick={() => removeField(key)}
                           >
-                            Remove
+                            {t('field.remove')}
                           </Chip>
                         </div>
                       </div>
                     )}
-                    <p className="text-sm text-slate-600">from: &quot;{evidence[field]}&quot;</p>
+                    <p className="text-sm text-slate-600">{t('home.from')} &quot;{evidence[field]}&quot;</p>
                   </li>
                 );
               })}
@@ -412,48 +432,53 @@ export default function Home() {
 
       {submitted && questions.length > 0 && (
         <section className="flex flex-col gap-4">
-          <SectionHeader title="A few quick questions" />
+          <SectionHeader title={t('home.quickQuestions')} />
           <Card className="flex flex-col gap-6 p-4 sm:p-6">
-            {questions.map((question) => (
-              <div
-                key={question.field}
-                className="flex flex-col gap-3 border-b border-slate-100 pb-6 last:border-b-0 last:pb-0"
-              >
-                <div className="flex flex-col gap-1">
-                  <p className="text-lg font-semibold text-slate-900">{question.text}</p>
-                  {question.helper && <p className="text-sm text-slate-600">{question.helper}</p>}
-                </div>
-                {question.input === 'number' ? (
-                  <NumberQuestion
-                    question={question}
-                    onAnswer={(value) => answerQuestion(question.field, value)}
-                    onNotSure={() => answerQuestion(question.field, null)}
-                  />
-                ) : (
-                  <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
-                    {question.options.map((option) => (
-                      <Button
-                        key={option.label}
-                        variant="ghost"
-                        onClick={() => answerQuestion(question.field, option.value)}
-                        className="w-full border-2 border-primary-700"
-                      >
-                        {option.label}
-                      </Button>
-                    ))}
-                    {!question.options.some((o) => /not sure/i.test(o.label)) && (
-                      <Button
-                        variant="ghost"
-                        onClick={() => answerQuestion(question.field, null)}
-                        className="w-full border-2 border-slate-400"
-                      >
-                        Not sure
-                      </Button>
+            {questions.map((question) => {
+              const copy = questionCopy(question.field, lang);
+              return (
+                <div
+                  key={question.field}
+                  className="flex flex-col gap-3 border-b border-slate-100 pb-6 last:border-b-0 last:pb-0"
+                >
+                  <div className="flex flex-col gap-1">
+                    <p className="text-lg font-semibold text-slate-900">{copy.text ?? question.text}</p>
+                    {(copy.helper ?? question.helper) && (
+                      <p className="text-sm text-slate-600">{copy.helper ?? question.helper}</p>
                     )}
                   </div>
-                )}
-              </div>
-            ))}
+                  {question.input === 'number' ? (
+                    <NumberQuestion
+                      question={question}
+                      onAnswer={(value) => answerQuestion(question.field, value)}
+                      onNotSure={() => answerQuestion(question.field, null)}
+                    />
+                  ) : (
+                    <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
+                      {question.options.map((option) => (
+                        <Button
+                          key={String(option.value)}
+                          variant="ghost"
+                          onClick={() => answerQuestion(question.field, option.value)}
+                          className="w-full border-2 border-primary-700"
+                        >
+                          {optionLabel(question.field, option.value, lang) ?? option.label}
+                        </Button>
+                      ))}
+                      {!question.options.some((o) => o.value === null) && (
+                        <Button
+                          variant="ghost"
+                          onClick={() => answerQuestion(question.field, null)}
+                          className="w-full border-2 border-slate-400"
+                        >
+                          {t('option.notSure')}
+                        </Button>
+                      )}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
           </Card>
         </section>
       )}
@@ -464,7 +489,7 @@ export default function Home() {
             to="/results"
             className="inline-flex min-h-[48px] w-full items-center justify-center gap-2 rounded-xl border-2 border-primary-700 px-5 text-base font-semibold text-primary-700 hover:bg-primary-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 sm:w-auto"
           >
-            See my results
+            {t('home.seeResults')}
             <ArrowRight className="h-5 w-5" aria-hidden="true" />
           </Link>
         </div>
@@ -472,4 +497,3 @@ export default function Home() {
     </div>
   );
 }
-
