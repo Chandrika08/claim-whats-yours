@@ -204,7 +204,7 @@ function NumberQuestion({ question, onAnswer, onNotSure }: NumberQuestionProps) 
         aria-label={question.text}
         value={draft}
         onChange={(e) => setDraft(e.target.value)}
-        className="min-h-12 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-base focus:border-green-700 focus:outline-none sm:max-w-xs"
+        className="min-h-12 w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-base focus:border-primary-600 focus:outline-none sm:max-w-xs"
       />
       <div className="flex gap-2">
         <button

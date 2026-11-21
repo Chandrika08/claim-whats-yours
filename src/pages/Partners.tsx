@@ -40,9 +40,9 @@ const REACH_INPUTS: AssumptionInput[] = [
 const ASSUMPTION_INPUTS: AssumptionInput[] = [
   {
     id: 'benefitPerScheme',
-    label: 'Average benefit value per scheme',
+    label: 'Estimated benefit per scheme per year (Rs)',
     unit: 'Rs a year',
-    hint: 'Each scheme’s value comes from its official page (BUSINESS.md, Impact metrics). No average is given in the document.',
+    hint: "Enter a value from the scheme's official page. No average is given in the document (BUSINESS.md, Impact metrics).",
   },
   {
     id: 'middlemanFee',
@@ -136,7 +136,12 @@ const ROLLOUT_STEPS = [
 export default function Partners() {
   const idPrefix = useId();
   const [drafts, setDrafts] = useState<Record<AssumptionId, string>>(
-    () => Object.fromEntries(ALL_INPUTS.map((input) => [input.id, ''])) as Record<AssumptionId, string>,
+    () =>
+      ({
+        ...Object.fromEntries(ALL_INPUTS.map((input) => [input.id, ''])),
+        families: '1000',
+        schemesPerFamily: '3',
+      }) as Record<AssumptionId, string>,
   );
 
   const parsed = Object.fromEntries(
@@ -259,8 +264,12 @@ export default function Partners() {
         <SectionHeader
           icon={<Calculator className="h-5 w-5" aria-hidden="true" />}
           title={<span id={`${idPrefix}-calculator`}>Impact calculator</span>}
-          subtitle="Change any number. Every assumption is editable and starts empty."
+          subtitle="Change any number. Every assumption is editable."
         />
+
+        <div>
+          <Badge tone="possible">Example assumptions, not real data</Badge>
+        </div>
 
         <Card className="flex flex-col gap-5 p-4 sm:p-6">
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">{REACH_INPUTS.map(renderInput)}</div>

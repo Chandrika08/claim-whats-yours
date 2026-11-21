@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { AlertTriangle, ArrowRight, CalendarPlus, ListChecks } from 'lucide-react';
-import { Badge, Button, Card, EmptyState, SectionHeader } from '../components/ui';
+import { Badge, Button, Card, EmptyState } from '../components/ui';
 import type { BadgeTone } from '../components/ui';
 import { buildIcs, downloadIcs } from '../lib/ics';
 import { loadSchemes } from '../lib/schemes';

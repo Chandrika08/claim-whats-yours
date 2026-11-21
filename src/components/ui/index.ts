@@ -12,7 +12,6 @@ export { SectionHeader } from './SectionHeader';
 export type { SectionHeaderProps } from './SectionHeader';
 export { EmptyState } from './EmptyState';
 export type { EmptyStateProps } from './EmptyState';
-export { Shimmer } from './Shimmer';
-export type { ShimmerProps } from './Shimmer';
+
 export { Collapsible } from './Collapsible';
 export type { CollapsibleProps } from './Collapsible';
