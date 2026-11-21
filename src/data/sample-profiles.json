@@ -1,0 +1,143 @@
+{
+  "note": "All people below are invented. Use only these for demos and tests.",
+  "profiles": [
+    {
+      "id": "p1",
+      "label": "Owner farmer, 2 acres",
+      "story": "I am a farmer in Andhra Pradesh. I own 2 acres of land. I am 45 years old. Our family earns about 1 lakh a year. I have a bank account.",
+      "expected_extraction": {
+        "state": "Andhra Pradesh",
+        "occupation": "farmer",
+        "land_acres": 2,
+        "land_ownership": "owner",
+        "age": 45,
+        "annual_household_income": 100000,
+        "has_bank_account": true
+      },
+      "full_profile": {
+        "state": "Andhra Pradesh",
+        "age": 45,
+        "gender": "male",
+        "occupation": "farmer",
+        "land_acres": 2,
+        "land_ownership": "owner",
+        "annual_household_income": 100000,
+        "social_category": null,
+        "has_bank_account": true,
+        "household_has_senior": true,
+        "household_has_student": false,
+        "is_income_taxpayer": false,
+        "is_govt_employee": false,
+        "family_excluded_category": false,
+        "in_land_records_aug_2019": true,
+        "covered_by_other_pension": false,
+        "is_widow": false,
+        "is_bpl": false,
+        "lives_in_rural_area": true,
+        "is_destitute": false
+      }
+    },
+    {
+      "id": "p2",
+      "label": "Woman tenant farmer",
+      "story": "I am a woman farmer. I cultivate 3 acres of leased land and I am 38. We earn around 8000 rupees a month.",
+      "expected_extraction": {
+        "gender": "female",
+        "occupation": "farmer",
+        "land_acres": 3,
+        "land_ownership": "tenant",
+        "age": 38,
+        "annual_household_income": 96000
+      },
+      "full_profile": {
+        "state": "Andhra Pradesh",
+        "age": 38,
+        "gender": "female",
+        "occupation": "farmer",
+        "land_acres": 3,
+        "land_ownership": "tenant",
+        "annual_household_income": 96000,
+        "social_category": null,
+        "has_bank_account": true,
+        "household_has_senior": false,
+        "household_has_student": true,
+        "is_income_taxpayer": false,
+        "is_govt_employee": false,
+        "family_excluded_category": false,
+        "in_land_records_aug_2019": false,
+        "covered_by_other_pension": false,
+        "is_widow": false,
+        "is_bpl": true,
+        "lives_in_rural_area": true,
+        "is_destitute": false
+      }
+    },
+    {
+      "id": "p3",
+      "label": "Elderly farm labourers, no land",
+      "story": "My husband and I are 67 and 70. We worked as farm labourers and have no land. We earn very little, maybe 5000 a month.",
+      "expected_extraction": {
+        "occupation": "agricultural_labourer",
+        "land_ownership": "none",
+        "annual_household_income": 60000,
+        "household_has_senior": true
+      },
+      "full_profile": {
+        "state": "Andhra Pradesh",
+        "age": 67,
+        "gender": "female",
+        "occupation": "agricultural_labourer",
+        "land_acres": 0,
+        "land_ownership": "none",
+        "annual_household_income": 60000,
+        "social_category": null,
+        "has_bank_account": false,
+        "household_has_senior": true,
+        "household_has_student": false,
+        "is_income_taxpayer": false,
+        "is_govt_employee": false,
+        "family_excluded_category": false,
+        "in_land_records_aug_2019": false,
+        "covered_by_other_pension": false,
+        "is_widow": false,
+        "is_bpl": true,
+        "lives_in_rural_area": true,
+        "is_destitute": true
+      }
+    },
+    {
+      "id": "p4",
+      "label": "College student, farmer family",
+      "story": "I am 19 and studying in college. My father is a farmer with 1.5 acres. Our family income is about 90000 a year.",
+      "expected_extraction": {
+        "age": 19,
+        "occupation": "student",
+        "household_has_student": true,
+        "land_acres": 1.5,
+        "annual_household_income": 90000
+      },
+      "full_profile": {
+        "state": "Andhra Pradesh",
+        "age": 19,
+        "gender": "female",
+        "occupation": "student",
+        "land_acres": 1.5,
+        "land_ownership": "owner",
+        "annual_household_income": 90000,
+        "social_category": null,
+        "has_bank_account": true,
+        "household_has_senior": false,
+        "household_has_student": true,
+        "is_income_taxpayer": false,
+        "is_govt_employee": false,
+        "family_excluded_category": false,
+        "in_land_records_aug_2019": true,
+        "covered_by_other_pension": false,
+        "is_widow": false,
+        "is_bpl": false,
+        "lives_in_rural_area": true,
+        "is_destitute": false
+      }
+    }
+  ]
+}

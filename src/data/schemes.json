@@ -1,0 +1,533 @@
+[
+  {
+    "id": "pm-kisan",
+    "name": "Pradhan Mantri Kisan Samman Nidhi (PM-KISAN)",
+    "level": "central",
+    "state": "ALL",
+    "category": "Agriculture - income support",
+    "benefit_summary": "Rs 6000 per year per family, paid in three instalments of Rs 2000 every four months, directly into the bank account.",
+    "official_url": "https://www.myscheme.gov.in/schemes/pm-kisan",
+    "last_verified": "2026-11-21",
+    "rules": [
+      {
+        "id": "pmk-owns-land",
+        "field": "land_ownership",
+        "op": "in",
+        "value": [
+          "owner"
+        ],
+        "hard": true,
+        "explain": "The scheme is for families who hold cultivable land in their own name."
+      },
+      {
+        "id": "pmk-has-land",
+        "field": "land_acres",
+        "op": "gt",
+        "value": 0,
+        "hard": true,
+        "explain": "You need some cultivable land. The portal gives no minimum or maximum size."
+      },
+      {
+        "id": "pmk-no-tax",
+        "field": "is_income_taxpayer",
+        "op": "is_false",
+        "value": null,
+        "hard": true,
+        "explain": "Families where someone paid income tax in the last assessment year are excluded."
+      },
+      {
+        "id": "pmk-no-govt",
+        "field": "is_govt_employee",
+        "op": "is_false",
+        "value": null,
+        "hard": true,
+        "explain": "Serving or retired government employees are excluded, except multi-tasking, Class IV and Group D staff."
+      },
+      {
+        "id": "pmk-no-excluded",
+        "field": "family_excluded_category",
+        "op": "is_false",
+        "value": null,
+        "hard": true,
+        "explain": "Excluded: families with a current or former minister, MP, MLA, mayor or other constitutional post holder, a registered professional (doctor, engineer, lawyer, CA, architect), or a pensioner getting Rs 10,000 or more a month."
+      },
+      {
+        "id": "pmk-bank",
+        "field": "has_bank_account",
+        "op": "is_true",
+        "value": null,
+        "hard": false,
+        "explain": "The money is paid into a savings bank account. If you don't have one, open one first."
+      }
+    ],
+    "documents": [
+      {
+        "name": "Aadhaar card",
+        "why": "The service centre operator needs it to register you",
+        "where_to_get": "Your own card. This app never asks for the number."
+      },
+      {
+        "name": "Landholding papers",
+        "why": "Proves the land is in your name",
+        "where_to_get": "Your own land records"
+      },
+      {
+        "name": "Savings bank account details or passbook",
+        "why": "The money is paid directly into this account",
+        "where_to_get": "Your bank"
+      }
+    ],
+    "apply_steps": [
+      "Collect your Aadhaar card, landholding papers and savings bank passbook.",
+      "Go to a Common Service Centre (CSC). The operator registers you online.",
+      "The operator enters your state, district, block, village, name, category, bank details and date of birth as printed on Aadhaar.",
+      "The operator enters your land details: survey or khata number, khasra number and land area.",
+      "The operator uploads your land papers, Aadhaar and bank passbook.",
+      "Accept the self-declaration and save the form.",
+      "Payment is made through the CSC ID to submit it.",
+      "Check your beneficiary status afterwards."
+    ],
+    "deadline": {
+      "type": "rolling",
+      "date": null,
+      "note": "The portal page states no deadline. Instalments come every four months."
+    }
+  },
+  {
+    "id": "pmfby",
+    "name": "Pradhan Mantri Fasal Bima Yojana (PMFBY)",
+    "level": "central",
+    "state": "ALL",
+    "category": "Agriculture - crop insurance",
+    "benefit_summary": "Crop insurance against loss from natural disasters, pests and diseases. Farmer pays at most 2% of the insured amount for kharif food and oilseed crops, 1.5% for rabi food and oilseed crops, and 5% for yearly commercial or horticultural crops. The government pays the rest. Only crops in notified areas are covered.",
+    "official_url": "https://www.myscheme.gov.in/schemes/pmfby",
+    "last_verified": "2026-11-21",
+    "rules": [
+      {
+        "id": "pmfby-cultivator",
+        "field": "land_ownership",
+        "op": "in",
+        "value": [
+          "owner",
+          "tenant"
+        ],
+        "hard": true,
+        "explain": "Land owners, tenant farmers and sharecroppers who grow the crop can join."
+      },
+      {
+        "id": "pmfby-has-land",
+        "field": "land_acres",
+        "op": "gt",
+        "value": 0,
+        "hard": true,
+        "explain": "You must be cultivating some land. You need land records or a valid land tenure agreement."
+      },
+      {
+        "id": "pmfby-bank",
+        "field": "has_bank_account",
+        "op": "is_true",
+        "value": null,
+        "hard": false,
+        "explain": "Registration asks for savings bank account details, and claims are paid to it."
+      }
+    ],
+    "documents": [
+      {
+        "name": "Passport-size photograph",
+        "why": "Needed for the application",
+        "where_to_get": "Any photo studio"
+      },
+      {
+        "name": "Bank passbook",
+        "why": "Account details for premium and claim payments",
+        "where_to_get": "Your bank"
+      },
+      {
+        "name": "Identity proof (Aadhaar, PAN, Voter ID, bank passbook with photo, Kisan photo book or NREGA job card)",
+        "why": "To confirm who you are",
+        "where_to_get": "Your own card"
+      },
+      {
+        "name": "Address proof (Aadhaar, PAN, Voter ID, electricity bill or bank passbook with photo)",
+        "why": "To confirm where you live",
+        "where_to_get": "Your own document"
+      },
+      {
+        "name": "Land records (Record of Rights, Land Possession Certificate or a valid tenancy agreement)",
+        "why": "Shows you cultivate the land",
+        "where_to_get": "Local revenue office, or your state land records"
+      },
+      {
+        "name": "Declaration of the crop sown or planned",
+        "why": "Says which crop you want insured",
+        "where_to_get": "Filled in during the application"
+      }
+    ],
+    "apply_steps": [
+      "Check with your bank or the agriculture office that your crop and area are notified under PMFBY for this season.",
+      "Collect your photo, passbook, identity proof, address proof and land records.",
+      "Apply through your bank, a Common Service Centre, or yourself on pmfby.gov.in.",
+      "Online: open the PMFBY site, choose Farmer Corner, then Guest Farmer, and fill in the registration form.",
+      "Log in with your mobile number and OTP, fill the Farmer Application Form and upload your documents.",
+      "Preview the form, then submit it. Choose Make Payment, or Pay Later if you will pay afterwards.",
+      "Print your payment receipt.",
+      "Track the application using Application Status on the PMFBY home page."
+    ],
+    "deadline": {
+      "type": "seasonal",
+      "date": null,
+      "note": "The portal says to apply usually within 2 weeks of the start of the sowing season. Cut-off dates differ by crop and season, so confirm the date with your bank or agriculture office."
+    }
+  },
+  {
+    "id": "kcc",
+    "name": "Kisan Credit Card (KCC)",
+    "level": "central",
+    "state": "ALL",
+    "category": "Agriculture - farm credit",
+    "benefit_summary": "Farm loans from a bank under one card for crops, post-harvest costs, household needs, farm maintenance and farm investment. The portal says interest subvention of 2% and a prompt repayment incentive of 3% bring the rate down to about 4% a year. The loan limit is set by the bank.",
+    "official_url": "https://www.myscheme.gov.in/schemes/kcc",
+    "last_verified": "2026-11-21",
+    "rules": [
+      {
+        "id": "kcc-cultivator",
+        "field": "land_ownership",
+        "op": "in",
+        "value": [
+          "owner",
+          "tenant"
+        ],
+        "hard": true,
+        "explain": "Owner cultivators, tenant farmers, oral lessees and sharecroppers can apply."
+      },
+      {
+        "id": "kcc-has-land",
+        "field": "land_acres",
+        "op": "gt",
+        "value": 0,
+        "hard": true,
+        "explain": "You must cultivate some land. The portal gives no minimum size."
+      },
+      {
+        "id": "kcc-bank",
+        "field": "has_bank_account",
+        "op": "is_true",
+        "value": null,
+        "hard": false,
+        "explain": "The card comes from a bank. The portal does not say an account is required, but banks usually prefer one."
+      }
+    ],
+    "documents": [
+      {
+        "name": "Application form",
+        "why": "The bank's KCC application form",
+        "where_to_get": "Your bank's website or branch"
+      },
+      {
+        "name": "Two passport-size photographs",
+        "why": "Needed for the application",
+        "where_to_get": "Any photo studio"
+      },
+      {
+        "name": "ID proof (Driving Licence, Aadhaar, Voter ID or Passport)",
+        "why": "To confirm who you are",
+        "where_to_get": "Your own document"
+      },
+      {
+        "name": "Address proof (Driving Licence or Aadhaar)",
+        "why": "To confirm where you live",
+        "where_to_get": "Your own document"
+      },
+      {
+        "name": "Proof of landholding certified by the revenue authorities",
+        "why": "Shows the land you cultivate",
+        "where_to_get": "Local revenue office"
+      },
+      {
+        "name": "Cropping pattern (crops grown) with acreage",
+        "why": "The bank uses it to work out your limit",
+        "where_to_get": "Written by you, as per your farm"
+      },
+      {
+        "name": "Security documents (only for loan limits above Rs 1.60 lakh or Rs 3.00 lakh, as applicable)",
+        "why": "Higher limits can need collateral",
+        "where_to_get": "Ask your bank if this applies to you"
+      },
+      {
+        "name": "Any other document the bank asks for at sanction",
+        "why": "Banks can add their own requirements",
+        "where_to_get": "Your bank"
+      }
+    ],
+    "apply_steps": [
+      "Choose a bank and check its KCC details. Banks can adapt the scheme to their own norms.",
+      "Collect your photos, ID proof, address proof, land papers certified by the revenue office, and your cropping pattern.",
+      "Online: open your bank's website, choose Kisan Credit Card, click Apply and fill in the form.",
+      "Submit the form. You will get an application reference number.",
+      "If you are eligible, the bank gets back to you within 3 to 4 working days for the next step.",
+      "The portal also lists an offline route. Ask your bank branch for the form."
+    ],
+    "deadline": {
+      "type": "rolling",
+      "date": null,
+      "note": "No deadline is stated. Apply any time with your bank."
+    }
+  },
+  {
+    "id": "pm-kmy",
+    "name": "Pradhan Mantri Kisan Maandhan Yojana (PM-KMY)",
+    "level": "central",
+    "state": "ALL",
+    "category": "Agriculture - old age pension",
+    "benefit_summary": "A pension for small and marginal farmers: a minimum assured Rs 3,000 per month after age 60, with 50% going to the spouse as family pension. The farmer pays a monthly contribution that depends on their age, and the government adds an equal amount.",
+    "official_url": "https://www.myscheme.gov.in/schemes/pmkmdy",
+    "last_verified": "2026-11-21",
+    "rules": [
+      {
+        "id": "kmy-owner",
+        "field": "land_ownership",
+        "op": "in",
+        "value": [
+          "owner"
+        ],
+        "hard": true,
+        "explain": "Your name must be in the state land records as a landholder."
+      },
+      {
+        "id": "kmy-land-size",
+        "field": "land_acres",
+        "op": "lte",
+        "value": 4.94,
+        "hard": true,
+        "explain": "Cultivable land up to 2 hectares, which is about 4.94 acres."
+      },
+      {
+        "id": "kmy-age-min",
+        "field": "age",
+        "op": "gte",
+        "value": 18,
+        "hard": true,
+        "explain": "You must be at least 18 when you join."
+      },
+      {
+        "id": "kmy-age-max",
+        "field": "age",
+        "op": "lte",
+        "value": 40,
+        "hard": true,
+        "explain": "You must be 40 or younger when you join."
+      },
+      {
+        "id": "kmy-records-2019",
+        "field": "in_land_records_aug_2019",
+        "op": "is_true",
+        "value": null,
+        "hard": true,
+        "explain": "Your name must have been in the land records on 1 August 2019."
+      },
+      {
+        "id": "kmy-bank",
+        "field": "has_bank_account",
+        "op": "is_true",
+        "value": null,
+        "hard": true,
+        "explain": "You need a savings bank account or a PM-KISAN account."
+      },
+      {
+        "id": "kmy-no-other-pension",
+        "field": "covered_by_other_pension",
+        "op": "is_false",
+        "value": null,
+        "hard": true,
+        "explain": "Farmers already covered by schemes like NPS, ESIC or EPFO, or who joined the Shram Yogi or Vyapari Maandhan pensions, are excluded."
+      },
+      {
+        "id": "kmy-no-tax",
+        "field": "is_income_taxpayer",
+        "op": "is_false",
+        "value": null,
+        "hard": true,
+        "explain": "People who paid income tax in the last assessment year are excluded."
+      },
+      {
+        "id": "kmy-no-govt",
+        "field": "is_govt_employee",
+        "op": "is_false",
+        "value": null,
+        "hard": true,
+        "explain": "Serving or retired government employees are excluded, except multi-tasking, Class IV and Group D staff."
+      },
+      {
+        "id": "kmy-no-excluded",
+        "field": "family_excluded_category",
+        "op": "is_false",
+        "value": null,
+        "hard": true,
+        "explain": "Former or present ministers, MPs, MLAs, mayors, constitutional post holders and registered professionals (doctors, engineers, lawyers, CAs, architects) are excluded."
+      }
+    ],
+    "documents": [
+      {
+        "name": "Aadhaar card",
+        "why": "The service centre operator uses it to register you",
+        "where_to_get": "Your own card. This app never asks for the number."
+      },
+      {
+        "name": "Savings bank account number with IFSC code (passbook, cheque book or bank statement copy)",
+        "why": "Proof of your bank account for the auto-debit of contributions",
+        "where_to_get": "Your bank"
+      }
+    ],
+    "apply_steps": [
+      "Check that your name was in the land records on 1 August 2019 and that your land is up to 2 hectares.",
+      "Collect your Aadhaar card and bank passbook, cheque book or statement.",
+      "Go to your nearest Common Service Centre (CSC).",
+      "Bring cash for the first monthly contribution. The system works out the amount from your age.",
+      "The operator registers you online with your bank details, mobile number, email, spouse and nominee details.",
+      "Sign the printed enrolment and auto-debit form. The operator scans and uploads it.",
+      "You get a Kisan Pension Account Number (KPAN) and a printed Kisan Card."
+    ],
+    "deadline": {
+      "type": "rolling",
+      "date": null,
+      "note": "No deadline is stated, but you must be 40 or younger when you join."
+    }
+  },
+  {
+    "id": "soil-health-card",
+    "name": "Soil Health Card (RKVY Soil Health and Fertility)",
+    "level": "central",
+    "state": "ALL",
+    "category": "Agriculture - soil testing",
+    "benefit_summary": "Free or affordable soil testing for your land. You get a Soil Health Card that reports 12 soil parameters and recommends the fertiliser and soil amendments your farm needs, so you avoid over- or under-using fertiliser.",
+    "official_url": "https://www.myscheme.gov.in/schemes/rkvyshfshc",
+    "last_verified": "2026-11-21",
+    "rules": [
+      {
+        "id": "shc-farmer",
+        "field": "occupation",
+        "op": "in",
+        "value": [
+          "farmer"
+        ],
+        "hard": true,
+        "explain": "The scheme is for all farmers in India."
+      }
+    ],
+    "documents": [
+      {
+        "name": "Farmer and land details (the agent collects them at the visit)",
+        "why": "The agent records your details and your land details when taking the soil sample",
+        "where_to_get": "The portal says documents vary by state. Ask your Block Agriculture Officer what your state needs."
+      }
+    ],
+    "apply_steps": [
+      "Visit your District Agriculture Officer or Block Agriculture Officer and ask for soil testing and a Soil Health Card.",
+      "The officer checks whether your district or village is covered by the State Annual Action Plan for Soil Health Cards.",
+      "An agent visits you, collects your farmer details and land details, tags your land location on a mobile app, and takes a soil sample.",
+      "The soil is tested and a Soil Health report is made for your land.",
+      "You get the card with results and advice on suitable crops and on the type and amount of fertiliser. You can also download it from the Soil Health Card portal, or through the SMS link sent to your mobile."
+    ],
+    "deadline": {
+      "type": "rolling",
+      "date": null,
+      "note": "No deadline is stated. Your village must be covered by your state's yearly action plan, so ask the agriculture office."
+    }
+  },
+  {
+    "id": "pmksy-pdmc",
+    "name": "PM Krishi Sinchayee Yojana: Per Drop More Crop (PMKSY-PDMC)",
+    "level": "central",
+    "state": "ALL",
+    "category": "Agriculture - micro irrigation",
+    "benefit_summary": "Financial help for drip or sprinkler irrigation, plus water storage and conservation work. Assistance is 55% for small and marginal farmers and 45% for other farmers, shared by the central and state governments, and paid by direct bank transfer. The subsidy is limited to 5 hectares per farmer, and only BIS-marked equipment qualifies.",
+    "official_url": "https://www.myscheme.gov.in/schemes/pmksypdmc",
+    "last_verified": "2026-11-21",
+    "rules": [
+      {
+        "id": "pdmc-farmer",
+        "field": "occupation",
+        "op": "in",
+        "value": [
+          "farmer"
+        ],
+        "hard": true,
+        "explain": "All farmers of the state or union territory can take the benefits."
+      },
+      {
+        "id": "pdmc-has-land",
+        "field": "land_acres",
+        "op": "gt",
+        "value": 0,
+        "hard": true,
+        "explain": "You must show agricultural land documents, so you need some land."
+      },
+      {
+        "id": "pdmc-land-cap",
+        "field": "land_acres",
+        "op": "lte",
+        "value": 12.35,
+        "hard": false,
+        "explain": "The subsidy is limited to 5 hectares per farmer, about 12.35 acres. If you have more land, only part of it is covered."
+      },
+      {
+        "id": "pdmc-bank",
+        "field": "has_bank_account",
+        "op": "is_true",
+        "value": null,
+        "hard": false,
+        "explain": "The subsidy is paid directly into your bank account."
+      }
+    ],
+    "documents": [
+      {
+        "name": "Aadhaar card",
+        "why": "The portal says Aadhaar details are needed to receive the benefit",
+        "where_to_get": "Your own card. This app never asks for the number."
+      },
+      {
+        "name": "Bank account details",
+        "why": "The subsidy is paid directly into your account",
+        "where_to_get": "Your bank"
+      },
+      {
+        "name": "Address proof",
+        "why": "To confirm where you live",
+        "where_to_get": "Your own document"
+      },
+      {
+        "name": "Passport-size photograph",
+        "why": "Pasted and signed across on the form",
+        "where_to_get": "Any photo studio"
+      },
+      {
+        "name": "Caste certificate (only if applicable)",
+        "why": "Needed only if it applies to you",
+        "where_to_get": "Local revenue office"
+      },
+      {
+        "name": "Proof of agricultural land documents",
+        "why": "Shows the land where the system will be installed",
+        "where_to_get": "Your own land records"
+      },
+      {
+        "name": "Domicile certificate of your state",
+        "why": "Shows you are a resident of the state",
+        "where_to_get": "Local revenue office"
+      }
+    ],
+    "apply_steps": [
+      "Contact your Block or District Agriculture Office through your Gram Panchayat, or call the Kisan Call Centre on 1800-180-1551 (toll-free).",
+      "Ask for the application form for the scheme and collect it.",
+      "Fill in all mandatory fields, paste a passport-size photograph signed across, and attach self-attested copies of the documents.",
+      "Submit the signed form and documents to the designated receiving authority.",
+      "Get a receipt or acknowledgment for your submission.",
+      "Buy only BIS-marked drip or sprinkler equipment. You can install it yourself or through an approved micro irrigation company."
+    ],
+    "deadline": {
+      "type": "rolling",
+      "date": null,
+      "note": "No deadline is stated. Ask your Block Agriculture Office about the current season."
+    }
+  }
+]
