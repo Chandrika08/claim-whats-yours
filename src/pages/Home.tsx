@@ -267,11 +267,11 @@ export default function Home() {
       <header className="flex flex-col gap-3">
         <p className="text-xs font-semibold uppercase tracking-wide text-accent-700">Claim What's Yours</p>
         <h1 className="text-3xl font-extrabold leading-tight text-slate-900 sm:text-4xl">
-          Government schemes you may be missing. Find them in one sentence.
+          Missing a government scheme? Find the ones you are likely eligible for.
         </h1>
         <p className="text-base leading-relaxed text-slate-600 sm:text-lg">
-          Checking whether you are likely eligible is free and takes a minute: describe your family and land in simple
-          words. This is not a guarantee.
+          Like Ramesh, with 2 acres and a family of five, you may hear about schemes from neighbours without knowing
+          which apply. Describe your family and land in plain words, no middleman needed. This is not a guarantee.
         </p>
       </header>
 
@@ -410,7 +410,7 @@ export default function Home() {
         </section>
       )}
 
-      {questions.length > 0 && (
+      {submitted && questions.length > 0 && (
         <section className="flex flex-col gap-4">
           <SectionHeader title="A few quick questions" />
           <Card className="flex flex-col gap-6 p-4 sm:p-6">
@@ -458,15 +458,17 @@ export default function Home() {
         </section>
       )}
 
-      <div>
-        <Link
-          to="/results"
-          className="inline-flex min-h-[48px] w-full items-center justify-center gap-2 rounded-xl border-2 border-primary-700 px-5 text-base font-semibold text-primary-700 hover:bg-primary-50 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-accent-300 sm:w-auto"
-        >
-          See my results
-          <ArrowRight className="h-5 w-5" aria-hidden="true" />
-        </Link>
-      </div>
+      {submitted && (
+        <div>
+          <Link
+            to="/results"
+            className="inline-flex min-h-[48px] w-full items-center justify-center gap-2 rounded-xl border-2 border-primary-700 px-5 text-base font-semibold text-primary-700 hover:bg-primary-50 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-accent-300 sm:w-auto"
+          >
+            See my results
+            <ArrowRight className="h-5 w-5" aria-hidden="true" />
+          </Link>
+        </div>
+      )}
     </div>
   );
 }
