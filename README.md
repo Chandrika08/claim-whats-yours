@@ -1,6 +1,6 @@
 # Claim What's Yours
 
-Live demo: LIVE_URL_HERE
+Live demo: [https://claim-whats-yours.netlify.app](https://claim-whats-yours.netlify.app)
 
 ## What the app does
 

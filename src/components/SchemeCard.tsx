@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import type { ReactNode } from 'react';
-import { BookmarkCheck, Check, CircleAlert, Clock, ExternalLink, HelpCircle, X } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Check, CircleAlert, Clock, ExternalLink, HelpCircle, X } from 'lucide-react';
 import { Badge, Button, Card, Collapsible, ProgressBar } from './ui';
 import type { BadgeTone } from './ui';
 import type { MatchResult, RuleResult, Scheme } from '../types';
+import { loadTracker, upsertEntry } from '../lib/tracker';
 
 const REVERIFY_AFTER_DAYS = 90;
 const MS_PER_DAY = 24 * 60 * 60 * 1000;
@@ -79,7 +81,7 @@ function DocumentItem({
 }
 
 export default function SchemeCard({ scheme, result }: { scheme: Scheme; result: MatchResult }) {
-  const [tracked, setTracked] = useState(false);
+  const [tracked, setTracked] = useState(() => loadTracker().some((e) => e.schemeId === scheme.id));
   const documents = scheme.documents ?? [];
   const applySteps = scheme.apply_steps ?? [];
   const stale = needsReverification(scheme.last_verified);
@@ -89,6 +91,18 @@ export default function SchemeCard({ scheme, result }: { scheme: Scheme; result:
 
   const toggleDoc = (index: number) =>
     setCheckedDocs((prev) => prev.map((value, i) => (i === index ? !value : value)));
+
+  const addToTracker = () => {
+    if (loadTracker().some((e) => e.schemeId === scheme.id)) {
+      setTracked(true);
+      return;
+    }
+    upsertEntry(scheme.id, {
+      status: 'not_started',
+      deadline: scheme.deadline?.date ?? null,
+    });
+    setTracked(true);
+  };
 
   return (
     <Card animate className="flex flex-col gap-4 border border-slate-200">
@@ -183,21 +197,31 @@ export default function SchemeCard({ scheme, result }: { scheme: Scheme; result:
             </span>
           )}
         </div>
-        <Button
-          variant={tracked ? 'secondary' : 'primary'}
-          aria-pressed={tracked}
-          onClick={() => setTracked((prev) => !prev)}
-          className="w-full sm:w-auto"
-        >
-          {tracked ? (
-            <>
-              <BookmarkCheck className="h-5 w-5" aria-hidden="true" />
-              Added to tracker
-            </>
-          ) : (
-            'Add to tracker'
+        <div className="flex flex-wrap items-center gap-3">
+          <Button
+            variant={tracked ? 'secondary' : 'primary'}
+            aria-pressed={tracked}
+            onClick={addToTracker}
+            className="w-full sm:w-auto"
+          >
+            {tracked ? (
+              <>
+                <Check className="h-5 w-5" aria-hidden="true" />
+                Tracked
+              </>
+            ) : (
+              'Add to tracker'
+            )}
+          </Button>
+          {tracked && (
+            <Link
+              to="/tracker"
+              className="inline-flex min-h-[48px] items-center rounded-lg font-semibold text-primary-700 underline-offset-2 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+            >
+              View in tracker
+            </Link>
           )}
-        </Button>
+        </div>
       </footer>
     </Card>
   );

@@ -1,6 +1,7 @@
-import { useState } from 'react';
-import { NavLink } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { NavLink, useLocation } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
+import { loadTracker, TRACKER_CHANGED_EVENT, TRACKER_KEY } from '../lib/tracker';
 
 const links = [
   { to: '/', label: 'Home' },
@@ -22,9 +23,45 @@ function linkClass({ isActive }: { isActive: boolean }) {
   ].join(' ');
 }
 
+function trackerCount(): number {
+  try {
+    return loadTracker().length;
+  } catch {
+    return 0;
+  }
+}
+
+function TrackerBadge({ count }: { count: number }) {
+  if (count === 0) return null;
+  return (
+    <span
+      aria-label={`${count} tracked`}
+      className="ml-2 inline-flex min-w-[1.5rem] items-center justify-center rounded-full bg-accent-500 px-1.5 text-xs font-bold text-slate-900"
+    >
+      {count}
+    </span>
+  );
+}
+
 export default function Nav() {
   const [open, setOpen] = useState(false);
   const close = () => setOpen(false);
+  const location = useLocation();
+  const [count, setCount] = useState(trackerCount);
+
+  useEffect(() => {
+    const refresh = () => setCount(trackerCount());
+    refresh();
+    const onStorage = (e: StorageEvent) => {
+      if (e.key === null || e.key === TRACKER_KEY) refresh();
+    };
+    window.addEventListener('storage', onStorage);
+    window.addEventListener(TRACKER_CHANGED_EVENT, refresh);
+    return () => {
+      window.removeEventListener('storage', onStorage);
+      window.removeEventListener(TRACKER_CHANGED_EVENT, refresh);
+    };
+  }, [location.pathname]);
 
   return (
     <header className="sticky top-0 z-40 bg-white shadow-soft">
@@ -38,6 +75,7 @@ export default function Nav() {
             <li key={link.to}>
               <NavLink to={link.to} end={link.to === '/'} className={linkClass}>
                 {link.label}
+                {link.to === '/tracker' && <TrackerBadge count={count} />}
               </NavLink>
             </li>
           ))}
@@ -66,6 +104,7 @@ export default function Nav() {
                 className={({ isActive }) => `${linkClass({ isActive })} w-full justify-start`}
               >
                 {link.label}
+                {link.to === '/tracker' && <TrackerBadge count={count} />}
               </NavLink>
             </li>
           ))}

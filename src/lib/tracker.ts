@@ -6,6 +6,9 @@
 
 export const TRACKER_KEY = 'cwy.tracker.v1';
 
+/** Dispatched on window after the tracker list is saved, so UI (e.g. the nav badge) can refresh. */
+export const TRACKER_CHANGED_EVENT = 'cwy:tracker-changed';
+
 export type TrackerStatus = 'not_started' | 'documents_ready' | 'applied' | 'approved' | 'rejected';
 
 export const TRACKER_STATUS_LABELS: Record<TrackerStatus, string> = {
@@ -84,6 +87,9 @@ export function saveTracker(entries: TrackerEntry[], storage?: TrackerStorage): 
   const store = resolveStorage(storage);
   if (!store) return;
   store.setItem(TRACKER_KEY, JSON.stringify(entries));
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new Event(TRACKER_CHANGED_EVENT));
+  }
 }
 
 /**

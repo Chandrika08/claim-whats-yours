@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { AlertTriangle, ArrowRight, CalendarPlus, ListChecks } from 'lucide-react';
+import { AlertTriangle, ArrowRight, CalendarPlus, ExternalLink, ListChecks, Trash2 } from 'lucide-react';
 import { Badge, Button, Card, EmptyState } from '../components/ui';
 import type { BadgeTone } from '../components/ui';
 import { buildIcs, downloadIcs } from '../lib/ics';
@@ -9,11 +9,13 @@ import {
   TRACKER_STATUS_LABELS,
   deadlineStatus,
   loadTracker,
+  removeEntry,
   upsertEntry,
   type DeadlineStatus,
   type TrackerEntry,
   type TrackerStatus,
 } from '../lib/tracker';
+import type { Scheme } from '../types';
 
 const STATUS_OPTIONS = Object.entries(TRACKER_STATUS_LABELS) as [TrackerStatus, string][];
 
@@ -42,14 +44,14 @@ const fieldClass =
 export default function Tracker() {
   const [state, setState] = useState<TrackerState>(readState);
 
-  const titles = useMemo(() => {
+  const schemesById = useMemo(() => {
     try {
-      return new Map(loadSchemes().map((s) => [s.id, s.name] as const));
+      return new Map(loadSchemes().map((s) => [s.id, s] as const));
     } catch {
-      return new Map<string, string>();
+      return new Map<string, Scheme>();
     }
   }, []);
-  const titleFor = (schemeId: string) => titles.get(schemeId) ?? schemeId;
+  const titleFor = (schemeId: string) => schemesById.get(schemeId)?.name ?? schemeId;
 
   const today = new Date();
   const alerts = state.entries
@@ -64,6 +66,14 @@ export default function Tracker() {
     try {
       const next = upsertEntry(schemeId, patch);
       setState({ entries: next, error: null });
+    } catch {
+      setState((prev) => ({ ...prev, error: STORAGE_ERROR }));
+    }
+  }
+
+  function remove(schemeId: string) {
+    try {
+      setState({ entries: removeEntry(schemeId), error: null });
     } catch {
       setState((prev) => ({ ...prev, error: STORAGE_ERROR }));
     }
@@ -141,6 +151,7 @@ export default function Tracker() {
             const status = deadlineStatus(entry, today);
             const badge = status === 'none' ? null : DEADLINE_BADGE[status];
             const id = entry.schemeId;
+            const scheme = schemesById.get(id);
             return (
               <li key={id}>
                 <Card className="flex flex-col gap-4">
@@ -148,6 +159,18 @@ export default function Tracker() {
                     <h2 className="text-lg font-bold text-slate-900">{titleFor(id)}</h2>
                     {badge && <Badge tone={badge.tone}>{badge.label}</Badge>}
                   </div>
+
+                  {scheme?.official_url && (
+                    <a
+                      href={scheme.official_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex min-h-[44px] w-fit items-center gap-1.5 rounded-lg font-semibold text-primary-700 underline-offset-2 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+                    >
+                      Official website
+                      <ExternalLink className="h-4 w-4" aria-hidden="true" />
+                    </a>
+                  )}
 
                   <div className="flex flex-col gap-1.5">
                     <label htmlFor={`status-${id}`} className="text-sm font-semibold text-slate-700">
@@ -176,8 +199,14 @@ export default function Tracker() {
                       type="date"
                       value={entry.deadline ?? ''}
                       onChange={(e) => update(id, { deadline: e.target.value === '' ? null : e.target.value })}
+                      aria-describedby={scheme?.deadline.note ? `deadline-note-${id}` : undefined}
                       className={fieldClass}
                     />
+                    {scheme?.deadline.note && (
+                      <p id={`deadline-note-${id}`} className="text-sm text-slate-600">
+                        {scheme.deadline.note}
+                      </p>
+                    )}
                   </div>
 
                   <div className="flex flex-col gap-1.5">
@@ -194,8 +223,8 @@ export default function Tracker() {
                     />
                   </div>
 
-                  {entry.deadline && (
-                    <div>
+                  <div className="flex flex-wrap items-center gap-3">
+                    {entry.deadline && (
                       <Button
                         variant="ghost"
                         onClick={() => addToCalendar(entry)}
@@ -204,8 +233,16 @@ export default function Tracker() {
                         <CalendarPlus className="h-5 w-5" aria-hidden="true" />
                         Add to calendar
                       </Button>
-                    </div>
-                  )}
+                    )}
+                    <Button
+                      variant="ghost"
+                      onClick={() => remove(id)}
+                      className="w-full border-2 border-slate-300 text-slate-700 hover:bg-slate-50 sm:w-auto"
+                    >
+                      <Trash2 className="h-5 w-5" aria-hidden="true" />
+                      Remove
+                    </Button>
+                  </div>
                 </Card>
               </li>
             );
