@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
-import { Menu, X } from 'lucide-react';
+import { Menu, Sparkles, X } from 'lucide-react';
 import { loadTracker, TRACKER_CHANGED_EVENT, TRACKER_KEY } from '../lib/tracker';
 
 const links = [
@@ -66,7 +66,8 @@ export default function Nav() {
   return (
     <header className="sticky top-0 z-40 bg-white shadow-soft">
       <nav className="mx-auto flex max-w-2xl items-center justify-between gap-2 px-4 py-3">
-        <NavLink to="/" end onClick={close} className="text-lg font-bold text-primary-800">
+        <NavLink to="/" end onClick={close} className="inline-flex items-center gap-2 text-2xl font-extrabold tracking-tight text-primary-800">
+          <Sparkles aria-hidden="true" className="h-5 w-5 text-accent-700" />
           Hakku
           <span className="hidden sm:inline ml-2 text-xs font-normal text-primary-700">Claim what&apos;s yours</span>
         </NavLink>

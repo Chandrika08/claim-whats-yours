@@ -265,7 +265,7 @@ export default function Home() {
   return (
     <div className="mx-auto flex w-full max-w-2xl flex-col gap-8 px-4 py-6 sm:py-10">
       <header className="flex flex-col gap-3">
-        <p className="text-xs font-semibold uppercase tracking-wide text-accent-700">HAKKU</p>
+        <p className="inline-flex items-center gap-2 text-2xl font-extrabold tracking-tight text-primary-800"><Sparkles className="h-5 w-5 text-accent-700" aria-hidden="true" />Hakku</p>
         <h1 className="text-3xl font-extrabold leading-tight text-slate-900 sm:text-4xl">
           Missing a government scheme? Find the ones you are likely eligible for.
         </h1>
