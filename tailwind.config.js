@@ -43,6 +43,7 @@ export default {
           'Roboto',
           '"Noto Sans"',
           '"Noto Sans Telugu"',
+          '"Noto Sans Devanagari"',
           '"Helvetica Neue"',
           'Arial',
           'sans-serif',

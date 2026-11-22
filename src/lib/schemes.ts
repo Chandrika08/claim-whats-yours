@@ -73,3 +73,16 @@ export function loadSchemes(): Scheme[] {
   const overrideIds = new Set(override.map((s) => s.id));
   return [...bundled.filter((s) => !overrideIds.has(s.id)), ...override];
 }
+
+/**
+ * Like loadSchemes(), but saved changes that cannot be read fall back to the
+ * bundled schemes so farmer pages still render. Admin shows the error itself
+ * by calling loadSchemes() directly.
+ */
+export function loadSchemesOrBundled(): Scheme[] {
+  try {
+    return loadSchemes();
+  } catch {
+    return validateSchemes(schemesData);
+  }
+}

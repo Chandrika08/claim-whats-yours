@@ -21,7 +21,7 @@ export default function LanguageSelector() {
             aria-pressed={active}
             lang={meta.htmlLang}
             onClick={() => setLang(code)}
-            className={`min-h-9 whitespace-nowrap rounded-full px-2.5 text-xs font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 md:px-2.5 md:text-sm ${
+            className={`min-h-11 min-w-11 whitespace-nowrap rounded-full px-2.5 text-xs font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 md:px-3 md:text-sm ${
               active
                 ? 'bg-primary-700 text-white shadow'
                 : 'text-primary-800 hover:bg-primary-50'

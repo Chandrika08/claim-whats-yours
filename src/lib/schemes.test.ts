@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { loadSchemes, validateSchemes, OVERRIDE_KEY } from './schemes';
+import { loadSchemes, loadSchemesOrBundled, validateSchemes, OVERRIDE_KEY } from './schemes';
 
 describe('loadSchemes', () => {
   beforeEach(() => {
@@ -41,6 +41,15 @@ describe('loadSchemes', () => {
     delete broken.official_url;
     localStorage.setItem(OVERRIDE_KEY, JSON.stringify([broken]));
     expect(() => loadSchemes()).toThrow(/pm-kisan.*official_url/);
+  });
+
+  it('loadSchemesOrBundled falls back to the six bundled schemes when the override is broken', () => {
+    const broken = { ...loadSchemes()[0] } as Record<string, unknown>;
+    delete broken.official_url;
+    localStorage.setItem(OVERRIDE_KEY, JSON.stringify([broken]));
+    expect(() => loadSchemes()).toThrow();
+    expect(loadSchemesOrBundled()).toHaveLength(6);
+    localStorage.removeItem(OVERRIDE_KEY);
   });
 });
 

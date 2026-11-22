@@ -12,7 +12,7 @@ export function EmptyState({ title, description, icon, action, className = '' }:
   return (
     <div
       className={[
-        'flex flex-col items-center gap-3 rounded-2xl border border-dashed border-primary-200 bg-white/60 px-6 py-10 text-center',
+        'flex flex-col items-center gap-3 rounded-xl border border-dashed border-primary-200 bg-white/60 px-6 py-10 text-center',
         className,
       ].join(' ')}
     >

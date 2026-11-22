@@ -103,4 +103,17 @@ describe('SchemeCard tracker button', () => {
     removeEntry('test-scheme');
     expect(loadTracker()).toHaveLength(0);
   });
+
+  it('shows the unavailable notice and no verified-date line when last_verified is not a date', () => {
+    const badDate: Scheme = { ...scheme, last_verified: 'not-a-date' };
+    act(() => {
+      root.render(
+        <MemoryRouter>
+          <SchemeCard scheme={badDate} result={result} />
+        </MemoryRouter>,
+      );
+    });
+    expect(container.textContent).toContain('Verification date unavailable');
+    expect(container.textContent).not.toContain('not-a-date');
+  });
 });

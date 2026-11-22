@@ -9,7 +9,7 @@ const MENU_ID = 'primary-nav-menu';
 
 function linkClass({ isActive }: { isActive: boolean }) {
   return [
-    'inline-flex min-h-[48px] items-center rounded-full px-4 py-2 md:px-3 lg:px-4 text-base font-semibold transition duration-150',
+    'inline-flex min-h-11 items-center rounded-full px-3 py-2 lg:px-4 text-base font-semibold transition duration-150',
     'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2',
     isActive
       ? 'bg-primary-700 text-white shadow-soft'
@@ -44,13 +44,12 @@ export default function Nav() {
   const [count, setCount] = useState(trackerCount);
   const { t } = useLanguage();
 
-  // Admin and Partners are intentionally kept in English.
   const links = [
     { to: '/', label: t('nav.home') },
     { to: '/results', label: t('nav.results') },
     { to: '/tracker', label: t('nav.tracker') },
-    { to: '/admin', label: 'Admin' },
-    { to: '/partners', label: 'Partners' },
+    { to: '/admin', label: t('nav.admin') },
+    { to: '/partners', label: t('nav.partners') },
   ];
 
   useEffect(() => {
@@ -68,15 +67,15 @@ export default function Nav() {
   }, [location.pathname]);
 
   return (
-    <header className="sticky top-0 z-40 bg-white shadow-soft">
-      <nav className="mx-auto flex max-w-2xl items-center justify-between gap-2 px-4 py-3 md:max-w-3xl lg:max-w-5xl">
-        <NavLink to="/" end onClick={close} className="inline-flex shrink-0 items-center gap-2 whitespace-nowrap text-2xl font-extrabold tracking-tight text-primary-800">
+    <header className="sticky top-0 z-40 border-b border-stone-200 bg-white shadow-sm">
+      <nav className="mx-auto flex max-w-2xl flex-wrap items-center justify-between gap-x-2 gap-y-2 px-4 py-3 md:max-w-3xl lg:max-w-5xl">
+        <NavLink to="/" end onClick={close} className="inline-flex shrink-0 items-center gap-2 whitespace-nowrap text-2xl font-extrabold tracking-tight text-primary">
           <Sparkles aria-hidden="true" className="h-5 w-5 text-accent-700" />
           Hakku
           <span className="ml-2 hidden whitespace-nowrap text-xs font-normal text-primary-700 lg:inline">{t('nav.tagline')}</span>
         </NavLink>
 
-        <ul className="hidden gap-1 md:flex">
+        <ul className="hidden flex-wrap items-center gap-1 md:flex">
           {links.map((link) => (
             <li key={link.to}>
               <NavLink to={link.to} end={link.to === '/'} className={linkClass}>
@@ -90,21 +89,23 @@ export default function Nav() {
         </ul>
 
         <div className="flex shrink-0 items-center gap-2">
-          <LanguageSelector />
+          <div className="hidden md:flex">
+            <LanguageSelector />
+          </div>
           <button
             type="button"
             aria-expanded={open}
             aria-controls={MENU_ID}
             aria-label={open ? t('nav.closeMenu') : t('nav.openMenu')}
             onClick={() => setOpen((prev) => !prev)}
-            className="inline-flex min-h-[48px] min-w-[48px] items-center justify-center rounded-xl text-primary-800 transition duration-150 hover:bg-primary-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 md:hidden"
+            className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-xl text-primary-800 transition duration-150 hover:bg-primary-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 md:hidden"
           >
             {open ? <X aria-hidden="true" className="h-6 w-6" /> : <Menu aria-hidden="true" className="h-6 w-6" />}
           </button>
         </div>
       </nav>
 
-      <div id={MENU_ID} hidden={!open} className="border-t border-slate-100 bg-white px-4 pb-3 md:hidden">
+      <div id={MENU_ID} hidden={!open} className="border-t border-stone-200 bg-white px-4 pb-3 md:hidden">
         <ul className="flex flex-col gap-1 pt-2">
           {links.map((link) => (
             <li key={link.to}>
@@ -122,6 +123,9 @@ export default function Nav() {
             </li>
           ))}
         </ul>
+        <div className="pt-3">
+          <LanguageSelector />
+        </div>
       </div>
     </header>
   );

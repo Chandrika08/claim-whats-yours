@@ -1,11 +1,26 @@
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Check, ListChecks, Pencil, Sparkles, X } from 'lucide-react';
+import {
+  ArrowRight,
+  Check,
+  ClipboardCheck,
+  GraduationCap,
+  Landmark,
+  ListChecks,
+  PenLine,
+  Pencil,
+  ShieldCheck,
+  Sparkles,
+  Sprout,
+  UserRound,
+  Wheat,
+  X,
+} from 'lucide-react';
 import { Button, Card, Chip, SectionHeader } from '../components/ui';
 import { useProfile } from '../context/ProfileContext';
 import { matchAll } from '../lib/eligibility';
 import { nextQuestions, type Question } from '../lib/questions';
-import { loadSchemes } from '../lib/schemes';
+import { loadSchemesOrBundled } from '../lib/schemes';
 import type { Profile } from '../types';
 import sampleData from '../data/sample-profiles.json';
 import { useLanguage } from '../i18n/useLanguage';
@@ -77,12 +92,12 @@ const SAMPLE_LABEL_KEYS: Record<string, MessageKey> = {
   p4: 'sample.p4.label',
 };
 
-const SAMPLE_AVATARS = ['🧑‍🌾', '👩‍🌾', '🧓', '🎓'];
+const SAMPLE_ICONS = [Sprout, Wheat, UserRound, GraduationCap] as const;
 
-const STEPS: { number: number; labelKey: MessageKey }[] = [
-  { number: 1, labelKey: 'progress.tellUs' },
-  { number: 2, labelKey: 'progress.confirm' },
-  { number: 3, labelKey: 'progress.seeSchemes' },
+const STEPS: { number: number; labelKey: MessageKey; icon: typeof PenLine }[] = [
+  { number: 1, labelKey: 'progress.tellUs', icon: PenLine },
+  { number: 2, labelKey: 'progress.confirm', icon: ClipboardCheck },
+  { number: 3, labelKey: 'progress.seeSchemes', icon: Landmark },
 ];
 
 const schemesFallbackMeta: FieldMeta = { kind: 'text' };
@@ -140,7 +155,7 @@ function FieldEditor({ value, meta, label, onSave, onCancel }: FieldEditorProps)
   const canSave = meta.kind === 'number' ? parsed !== null : draft.trim() !== '';
 
   const inputClass =
-    'min-h-12 w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-base focus:border-primary-600 focus:outline-none';
+    'min-h-11 w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-base focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary';
 
   return (
     <div className="flex w-full flex-col gap-2 sm:flex-row sm:items-center">
@@ -222,7 +237,7 @@ function NumberQuestion({ question, onAnswer, onNotSure }: NumberQuestionProps) 
         aria-label={text}
         value={draft}
         onChange={(e) => setDraft(e.target.value)}
-        className="min-h-12 w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-base focus:border-primary-600 focus:outline-none sm:max-w-xs"
+        className="min-h-11 w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-base focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary sm:max-w-xs"
       />
       <div className="flex gap-2">
         <button
@@ -265,7 +280,7 @@ export default function Home() {
 
   const [editingField, setEditingField] = useState<string | null>(null);
 
-  const schemes = useMemo(() => loadSchemes(), []);
+  const schemes = useMemo(() => loadSchemesOrBundled(), []);
   const results = matchAll(profile as Profile, schemes);
   const questions = nextQuestions(profile as Profile, schemes, results).filter(
     (q) => !dismissed.includes(q.field),
@@ -283,53 +298,77 @@ export default function Home() {
 
   return (
     <div className="mx-auto flex w-full max-w-2xl flex-col gap-8 px-4 py-6 sm:py-10">
-      <header className="flex flex-col gap-3">
-        <p className="inline-flex items-center gap-2 text-2xl font-extrabold tracking-tight text-primary-800"><Sparkles className="h-5 w-5 text-accent-700" aria-hidden="true" />Hakku</p>
-        <h1 className="text-3xl font-extrabold leading-tight text-slate-900 sm:text-4xl">
+      <header className="flex flex-col gap-3 rounded-3xl border border-stone-200 bg-primary-50 p-5 shadow-sm sm:p-8">
+        <h2 className="inline-flex items-center gap-2 text-2xl font-extrabold tracking-tight text-primary-800">
+          <Sparkles className="h-5 w-5 text-accent-700" aria-hidden="true" />
+          Hakku
+        </h2>
+        <h1 className="text-3xl font-extrabold leading-tight text-stone-900 sm:text-4xl">
           {t('home.heroTitle')}
         </h1>
-        <p className="text-base leading-relaxed text-slate-600 sm:text-lg">
+        <p className="text-base leading-relaxed text-stone-700 sm:text-lg">
           {t('home.heroBody')}
         </p>
       </header>
 
-      <ol aria-label={t('progress.label')} className="grid grid-cols-3 gap-2">
-        {STEPS.map((step) => {
+      <ol
+        aria-label={t('progress.label')}
+        className="flex flex-col gap-4 rounded-2xl border border-stone-200 bg-white p-4 shadow-sm sm:flex-row sm:gap-0 sm:p-6"
+      >
+        {STEPS.map((step, index) => {
           const isDone = step.number < currentStep;
           const isActive = step.number === currentStep;
+          const StepIcon = step.icon;
           return (
             <li
               key={step.number}
               aria-current={isActive ? 'step' : undefined}
-              className="flex flex-col items-center gap-1.5 text-center"
+              className="relative flex flex-1 items-center gap-4 sm:flex-col sm:gap-3 sm:text-center"
             >
+              {index < STEPS.length - 1 && (
+                <span
+                  aria-hidden="true"
+                  className="absolute left-5 -bottom-4 top-10 w-0.5 bg-stone-300 sm:bottom-auto sm:left-[calc(50%+1.25rem)] sm:top-5 sm:h-0.5 sm:w-[calc(100%-2.5rem)]"
+                />
+              )}
               <span
                 className={[
-                  'flex h-10 w-10 items-center justify-center rounded-full text-sm font-bold',
-                  isDone || isActive ? 'bg-primary-700 text-white' : 'bg-slate-200 text-slate-600',
+                  'relative flex h-10 w-10 shrink-0 items-center justify-center rounded-full',
+                  isDone || isActive ? 'bg-primary-700 text-white' : 'bg-stone-200 text-stone-600',
                   isActive ? 'ring-4 ring-accent-300' : '',
                 ].join(' ')}
               >
-                {isDone ? <Check className="h-5 w-5" aria-hidden="true" /> : step.number}
+                {isDone ? (
+                  <Check className="h-5 w-5" aria-hidden="true" />
+                ) : (
+                  <StepIcon className="h-5 w-5" aria-hidden="true" />
+                )}
               </span>
-              <span className={['text-xs font-semibold sm:text-sm', isActive ? 'text-slate-900' : 'text-slate-600'].join(' ')}>
-                {t(step.labelKey)}
+              <span className="flex min-w-0 flex-col gap-0.5">
+                <span className={['text-sm font-bold', isActive ? 'text-primary-800' : 'text-stone-600'].join(' ')}>
+                  {step.number}
+                </span>
+                <span className={['text-base font-semibold leading-snug', isActive ? 'text-stone-900' : 'text-stone-700'].join(' ')}>
+                  {t(step.labelKey)}
+                </span>
               </span>
             </li>
           );
         })}
       </ol>
 
-      <section className="flex flex-col gap-4">
-        <label htmlFor="context-text" className="text-lg font-semibold text-slate-900">
-          {t('home.contextLabel')}
-        </label>
+      <section className="flex flex-col gap-4 rounded-3xl border border-stone-200 bg-white p-4 shadow-sm sm:p-6">
+        <h2>
+          <label htmlFor="context-text" className="text-lg font-semibold text-stone-800">
+            {t('home.contextLabel')}
+          </label>
+        </h2>
         <textarea
           id="context-text"
           value={text}
           onChange={(e) => setText(e.target.value)}
           placeholder={t('home.placeholder')}
-          className="min-h-[12rem] w-full rounded-2xl border-2 border-slate-300 bg-white p-4 text-base text-slate-900 shadow-soft placeholder:text-slate-500 focus:border-primary-600 focus:outline-none focus:ring-4 focus:ring-accent-300"
+          className="min-h-[12rem] w-full rounded-2xl border-2 border-stone-300 bg-white p-4 text-base text-stone-900 shadow-sm placeholder:text-stone-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
         />
 
         <div>
@@ -338,32 +377,40 @@ export default function Home() {
             {t('home.sampleIntro')}
           </p>
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-            {SAMPLE_PROFILES.map((sample, index) => (
-              <button
-                key={sample.id}
-                type="button"
-                onClick={() => loadSample(sample.story)}
-                className="flex min-h-[48px] w-full items-center gap-3 rounded-2xl border border-slate-200 bg-white p-3 text-left text-base font-medium text-slate-800 shadow-soft transition duration-150 hover:border-primary-500 hover:bg-primary-50 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-              >
-                <span
-                  aria-hidden="true"
-                  className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-primary-50 text-2xl"
+            {SAMPLE_PROFILES.map((sample, index) => {
+              const SampleIcon = SAMPLE_ICONS[index % SAMPLE_ICONS.length];
+              return (
+                <button
+                  key={sample.id}
+                  type="button"
+                  onClick={() => loadSample(sample.story)}
+                  className="flex min-h-11 w-full min-w-0 items-center gap-3 rounded-xl border border-stone-200 bg-white p-3 text-left text-base font-medium text-stone-800 shadow-sm transition duration-150 hover:border-primary hover:bg-primary-50 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
                 >
-                  {SAMPLE_AVATARS[index % SAMPLE_AVATARS.length]}
-                </span>
-                <span className="flex min-w-0 flex-col">
-                  <span className="text-xs font-semibold uppercase tracking-wide text-accent-700">{t('story.try')}</span>
-                  <span>{SAMPLE_LABEL_KEYS[sample.id] ? t(SAMPLE_LABEL_KEYS[sample.id]) : sample.label}</span>
-                </span>
-              </button>
-            ))}
+                  <span
+                    aria-hidden="true"
+                    className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-primary-50 text-primary-700"
+                  >
+                    <SampleIcon className="h-6 w-6" aria-hidden="true" />
+                  </span>
+                  <span className="flex min-w-0 flex-col">
+                    <span className="text-sm font-semibold uppercase tracking-wide text-accent-700">{t('story.try')}</span>
+                    <span className="break-words">{SAMPLE_LABEL_KEYS[sample.id] ? t(SAMPLE_LABEL_KEYS[sample.id]) : sample.label}</span>
+                  </span>
+                </button>
+              );
+            })}
           </div>
         </div>
 
-        <Button type="button" onClick={submit} disabled={text.trim() === ''} className="w-full sm:w-auto">
+        <Button type="button" onClick={submit} disabled={text.trim() === ''} className="min-h-12 w-full sm:w-auto">
           {t('home.findSchemes')}
           <ArrowRight className="h-5 w-5" aria-hidden="true" />
         </Button>
+
+        <p className="flex items-start gap-2 rounded-xl bg-stone-50 p-3 text-sm leading-relaxed text-stone-700">
+          <ShieldCheck className="mt-0.5 h-5 w-5 shrink-0 text-primary-700" aria-hidden="true" />
+          <span>{t('home.trustNote')}</span>
+        </p>
       </section>
 
       {submitted && (
@@ -454,13 +501,13 @@ export default function Home() {
                       onNotSure={() => answerQuestion(question.field, null)}
                     />
                   ) : (
-                    <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
+                    <div className="flex flex-wrap gap-2">
                       {question.options.map((option) => (
                         <Button
                           key={String(option.value)}
                           variant="ghost"
                           onClick={() => answerQuestion(question.field, option.value)}
-                          className="w-full border-2 border-primary-700"
+                          className="min-h-11 w-full whitespace-normal border-2 border-primary-700 sm:w-auto sm:flex-1 sm:basis-40"
                         >
                           {optionLabel(question.field, option.value, lang) ?? option.label}
                         </Button>
@@ -469,7 +516,7 @@ export default function Home() {
                         <Button
                           variant="ghost"
                           onClick={() => answerQuestion(question.field, null)}
-                          className="w-full border-2 border-slate-400"
+                          className="min-h-11 w-full whitespace-normal border-2 border-slate-400 sm:w-auto sm:flex-1 sm:basis-40"
                         >
                           {t('option.notSure')}
                         </Button>

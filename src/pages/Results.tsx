@@ -1,12 +1,12 @@
 import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { ClipboardList, ShieldCheck } from 'lucide-react';
+import { Check, CircleAlert, ClipboardList, ShieldCheck, X } from 'lucide-react';
 import SchemeCard, { fieldLabel } from '../components/SchemeCard';
-import { Collapsible, EmptyState, SectionHeader } from '../components/ui';
+import { Card, Collapsible, EmptyState, SectionHeader } from '../components/ui';
 import { useProfile } from '../context/ProfileContext';
 import { useLanguage } from '../i18n/useLanguage';
 import { matchAll } from '../lib/eligibility';
-import { loadSchemes } from '../lib/schemes';
+import { loadSchemesOrBundled } from '../lib/schemes';
 import type { MatchResult, Profile, Scheme } from '../types';
 
 type Paired = { scheme: Scheme; result: MatchResult };
@@ -14,7 +14,7 @@ type Paired = { scheme: Scheme; result: MatchResult };
 export default function Results() {
   const { profile, submitted } = useProfile();
   const { t } = useLanguage();
-  const schemes = useMemo(() => loadSchemes(), []);
+  const schemes = useMemo(() => loadSchemesOrBundled(), []);
 
   const groups = useMemo(() => {
     const byId = new Map<string, Scheme>(schemes.map((s) => [s.id, s]));
@@ -56,6 +56,38 @@ export default function Results() {
 
   const likelyCount = groups.likely.length;
   const possibleCount = groups.possibly.length;
+  const notCount = groups.not.length;
+
+  // Counts come straight from the computed result groups, so they always match the cards below.
+  const summaryCards = [
+    {
+      key: 'likely',
+      label: t('eligibility.likely'),
+      help: t('results.summary.likelyHelp'),
+      count: likelyCount,
+      icon: <Check className="h-6 w-6" aria-hidden="true" />,
+      text: 'text-eligible',
+      box: 'border-primary-300 bg-primary-50',
+    },
+    {
+      key: 'possibly',
+      label: t('eligibility.possible'),
+      help: t('results.summary.possibleHelp'),
+      count: possibleCount,
+      icon: <CircleAlert className="h-6 w-6" aria-hidden="true" />,
+      text: 'text-possible',
+      box: 'border-accent-300 bg-accent-50',
+    },
+    {
+      key: 'not',
+      label: t('eligibility.not'),
+      help: t('results.summary.notHelp'),
+      count: notCount,
+      icon: <X className="h-6 w-6" aria-hidden="true" />,
+      text: 'text-notEligible',
+      box: 'border-slate-300 bg-slate-50',
+    },
+  ];
 
   return (
     <div className="mx-auto flex max-w-2xl flex-col gap-6 p-4 pb-10">
@@ -69,10 +101,23 @@ export default function Results() {
             possible: possibleCount,
           })}
         </p>
-        <p className="flex items-start gap-2 text-sm text-primary-50">
-          <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
+        <p className="flex items-start gap-2 text-base text-primary-50">
+          <ShieldCheck className="mt-0.5 h-5 w-5 shrink-0" aria-hidden="true" />
           <span>{t('results.banner.disclaimer')}</span>
         </p>
+      </div>
+
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+        {summaryCards.map((card) => (
+          <Card key={card.key} className={['flex flex-col gap-2 border-2 p-4', card.box].join(' ')}>
+            <h2 className={['flex items-center gap-2 text-base font-bold', card.text].join(' ')}>
+              {card.icon}
+              {card.label}
+            </h2>
+            <p className="text-4xl font-extrabold text-slate-900">{card.count}</p>
+            <p className="text-base leading-snug text-slate-800">{card.help}</p>
+          </Card>
+        ))}
       </div>
 
       <section className="flex flex-col gap-4" aria-labelledby="likely-heading">
@@ -99,7 +144,7 @@ export default function Results() {
             <div key={scheme.id} className="flex flex-col gap-2">
               <SchemeCard scheme={scheme} result={result} />
               {result.missingFields.length > 0 && (
-                <p className="rounded-xl bg-accent-50 px-4 py-2 text-sm font-medium text-possible">
+                <p className="rounded-xl bg-accent-50 px-4 py-2 text-base font-medium text-possible">
                   {t('results.missing', {
                     fields: result.missingFields.map((field) => fieldLabel(t, field)).join(', '),
                   })}
@@ -110,7 +155,7 @@ export default function Results() {
         )}
       </section>
 
-      <Collapsible title={t('results.groupHeading', { label: t('eligibility.not'), count: groups.not.length })}>
+      <Collapsible title={t('results.groupHeading', { label: t('eligibility.not'), count: notCount })}>
         <div className="flex flex-col gap-4">
           {groups.not.length === 0 ? (
             <p className="text-base text-slate-600">{t('results.none.not')}</p>

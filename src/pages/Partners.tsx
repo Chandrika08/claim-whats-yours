@@ -1,5 +1,5 @@
 import { useId, useState } from 'react';
-import { Calculator, Coins, Rocket, Users } from 'lucide-react';
+import { Calculator, Coins, Gift, HeartHandshake, Info, Landmark, Rocket, Sprout, Tractor, Users } from 'lucide-react';
 import { Badge, Card, SectionHeader } from '../components/ui';
 
 // Source: docs/BUSINESS.md. The document gives no numeric figures for prices,
@@ -90,6 +90,34 @@ function formatNumber(n: number | null, prefix = ''): string {
   return `${prefix}${n.toLocaleString('en-IN', { maximumFractionDigits: 1 })}`;
 }
 
+const FUNDING_CHANNELS = [
+  {
+    icon: Sprout,
+    title: 'Agri-tech companies',
+    text: 'Fund the assisted-application tools that help farmers complete scheme forms.',
+  },
+  {
+    icon: Landmark,
+    title: 'State government programme partners',
+    text: 'Possible district-level licence to publish verified scheme data and track uptake.',
+  },
+  {
+    icon: Tractor,
+    title: 'FPOs and cooperatives',
+    text: 'Member-facing help desks that guide members through scheme applications.',
+  },
+  {
+    icon: HeartHandshake,
+    title: 'CSR programmes',
+    text: 'Corporate social responsibility budgets for rural inclusion, paid per family or per district.',
+  },
+  {
+    icon: Gift,
+    title: 'Philanthropic grants',
+    text: 'Grant funding for discovery and document guidance in pilot districts.',
+  },
+];
+
 const PRICING_LINES = [
   {
     payer: 'NGO / CSR',
@@ -162,14 +190,21 @@ export default function Partners() {
   const setDraft = (id: AssumptionId, value: string) =>
     setDrafts((current) => ({ ...current, [id]: value }));
 
-  const renderInput = (input: AssumptionInput) => {
+  const renderInput = (input: AssumptionInput, isAssumption: boolean) => {
     const inputId = `${idPrefix}-${input.id}`;
     const isInvalid = parsed[input.id] === 'invalid';
     return (
-      <div key={input.id} className="flex flex-col gap-1.5">
-        <label htmlFor={inputId} className="text-sm font-semibold text-slate-900">
-          {input.label} <span className="font-normal text-slate-600">({input.unit})</span>
-        </label>
+      <div key={input.id} className="flex min-w-0 flex-col gap-1.5">
+        <div className="flex flex-wrap items-center gap-2">
+          <label htmlFor={inputId} className="text-sm font-semibold text-slate-900">
+            {input.label} <span className="font-normal text-slate-600">({input.unit})</span>
+          </label>
+          {isAssumption && (
+            <Badge tone="possible" className="px-2 py-0.5 text-xs" icon={<Info className="h-3.5 w-3.5" aria-hidden="true" />}>
+              Assumption
+            </Badge>
+          )}
+        </div>
         <input
           id={inputId}
           type="number"
@@ -180,25 +215,24 @@ export default function Partners() {
           onChange={(e) => setDraft(input.id, e.target.value)}
           aria-invalid={isInvalid || undefined}
           className={[
-            'min-h-12 w-full rounded-xl border-2 bg-white px-3 py-2 text-base text-slate-900 focus:outline-none focus:ring-4 focus:ring-accent-300',
+            'min-h-12 w-full min-w-0 rounded-xl border-2 bg-white px-3 py-2 text-base text-slate-900 focus:outline-none focus:ring-4 focus:ring-accent-300',
             isInvalid ? 'border-possible' : 'border-slate-300 focus:border-primary-600',
           ].join(' ')}
         />
-        <p className="text-sm text-slate-600">{input.hint}</p>
+        <p className="text-sm break-words text-slate-600">{input.hint}</p>
       </div>
     );
   };
 
   return (
-    <div className="mx-auto flex w-full max-w-2xl flex-col gap-8 px-4 py-6 sm:py-10">
-      <header className="flex flex-col gap-3">
+    <div className="mx-auto flex w-full max-w-[1440px] flex-col gap-10 px-4 py-6 sm:px-6 sm:py-10 lg:px-8">
+      <header className="flex max-w-3xl flex-col gap-3">
         <p className="text-xs font-semibold uppercase tracking-wide text-accent-700">For partners</p>
-        <h1 className="text-3xl font-extrabold leading-tight text-slate-900 sm:text-4xl">
-          Help families claim what they are owed, at no cost to them.
-        </h1>
+        <h1 className="text-3xl font-extrabold leading-tight text-slate-900 sm:text-4xl">Partners</h1>
         <p className="text-base leading-relaxed text-slate-600 sm:text-lg">
-          Families never pay. Partners fund the work and get proof of benefits unlocked. Figures below are
-          assumptions to test, not guaranteed outcomes.
+          Hakku is a discovery and application-assistance platform that helps farmers in Andhra Pradesh find the
+          government schemes they may be eligible for and prepare their applications. Partnership is an opportunity we
+          are exploring. No partner has been agreed, and nothing on this page implies that one exists.
         </p>
       </header>
 
@@ -206,10 +240,37 @@ export default function Partners() {
         <h2 id={`${idPrefix}-problem`} className="text-xl font-bold text-slate-900">
           The problem
         </h2>
-        <p className="text-base leading-relaxed text-slate-700">
+        <p className="max-w-3xl text-base leading-relaxed text-slate-700">
           Eligible families miss benefits because information is scattered, rules are hard to read, the document list
           is unclear, and they pay middlemen for help that should be free.
         </p>
+      </section>
+
+      <section aria-labelledby={`${idPrefix}-funding`} className="flex flex-col gap-4">
+        <SectionHeader
+          icon={<Coins className="h-5 w-5" aria-hidden="true" />}
+          title={<span id={`${idPrefix}-funding`}>Funding channels and partnership opportunities</span>}
+          subtitle="Opportunities we are exploring. None is agreed yet."
+        />
+        <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {FUNDING_CHANNELS.map((channel) => {
+            const Icon = channel.icon;
+            return (
+              <li key={channel.title} className="min-w-0">
+                <Card className="flex h-full flex-col gap-3 p-4 sm:p-5">
+                  <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary-50 text-primary-700">
+                    <Icon className="h-5 w-5" aria-hidden="true" />
+                  </span>
+                  <h3 className="text-base font-semibold text-slate-900">{channel.title}</h3>
+                  <p className="text-base leading-relaxed text-slate-600">{channel.text}</p>
+                  <div className="mt-auto pt-1">
+                    <Badge tone="possible">Opportunity — not yet agreed</Badge>
+                  </div>
+                </Card>
+              </li>
+            );
+          })}
+        </ul>
       </section>
 
       <section aria-labelledby={`${idPrefix}-who-pays`} className="flex flex-col gap-4">
@@ -218,10 +279,10 @@ export default function Partners() {
           title={<span id={`${idPrefix}-who-pays`}>Who pays</span>}
           subtitle="Families never pay."
         />
-        <ol className="flex flex-col gap-3">
+        <ol className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           {WHO_PAYS.map((payer, index) => (
-            <li key={payer.title}>
-              <Card className="flex flex-col gap-1.5 p-4 sm:p-5">
+            <li key={payer.title} className="min-w-0">
+              <Card className="flex h-full flex-col gap-1.5 p-4 sm:p-5">
                 <p className="text-base font-semibold text-slate-900">
                   <span className="mr-2 text-primary-700">{index + 1}.</span>
                   {payer.title}
@@ -240,16 +301,19 @@ export default function Partners() {
         />
         <Card className="flex flex-col gap-4 p-4 sm:p-6">
           <div className="flex flex-col gap-2">
-            <Badge tone="possible">Assumptions to test with partners</Badge>
+            <Badge tone="possible" icon={<Info className="h-4 w-4" aria-hidden="true" />}>
+              Assumption
+            </Badge>
             <p className="text-sm text-slate-600">
-              None of these prices is set yet. Enter your own values in the calculator below.
+              Assumptions to test with partners. None of these prices is set yet. Enter your own values in the
+              calculator below.
             </p>
           </div>
-          <ul className="flex flex-col gap-3">
+          <ul className="grid grid-cols-1 gap-3 md:grid-cols-3">
             {PRICING_LINES.map((line) => (
               <li
                 key={line.payer}
-                className="flex flex-col gap-1 rounded-xl border border-slate-200 bg-slate-50 p-3"
+                className="flex min-w-0 flex-col gap-1 rounded-xl border border-slate-200 bg-slate-50 p-3"
               >
                 <span className="text-base font-semibold text-slate-900">{line.payer}</span>
                 <span className="text-base text-slate-700">{line.text}: ASSUMPTION</span>
@@ -267,48 +331,60 @@ export default function Partners() {
           subtitle="Change any number. Every assumption is editable."
         />
 
-        <div>
-          <Badge tone="possible">Example assumptions, not real data</Badge>
-        </div>
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] lg:items-start">
+          <Card className="flex min-w-0 flex-col gap-6 p-4 sm:p-6">
+            <div className="flex flex-col gap-2">
+              <Badge tone="possible" icon={<Info className="h-4 w-4" aria-hidden="true" />}>
+                Assumption
+              </Badge>
+              <p className="text-sm text-slate-600">Example assumptions, not real data. Figures are illustrative assumptions.</p>
+            </div>
 
-        <Card className="flex flex-col gap-5 p-4 sm:p-6">
-          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">{REACH_INPUTS.map(renderInput)}</div>
+            <fieldset className="flex flex-col gap-4">
+              <legend className="text-sm font-semibold uppercase tracking-wide text-accent-700">Reach</legend>
+              <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+                {REACH_INPUTS.map((input) => renderInput(input, false))}
+              </div>
+            </fieldset>
 
-          <div className="flex flex-col gap-4 border-t border-slate-200 pt-5">
-            <p className="text-sm font-semibold uppercase tracking-wide text-accent-700">Other assumptions</p>
-            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">{ASSUMPTION_INPUTS.map(renderInput)}</div>
-          </div>
+            <fieldset className="flex flex-col gap-4 border-t border-slate-200 pt-5">
+              <legend className="text-sm font-semibold uppercase tracking-wide text-accent-700">Other assumptions</legend>
+              <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+                {ASSUMPTION_INPUTS.map((input) => renderInput(input, true))}
+              </div>
+            </fieldset>
 
-          {invalidLabels.length > 0 && (
-            <p role="alert" className="rounded-xl bg-accent-50 p-3 text-sm font-semibold text-accent-900">
-              Enter a number of 0 or more for: {invalidLabels.join(', ')}.
-            </p>
-          )}
+            {invalidLabels.length > 0 && (
+              <p role="alert" className="rounded-xl bg-accent-50 p-3 text-sm font-semibold text-accent-900">
+                Enter a number of 0 or more for: {invalidLabels.join(', ')}.
+              </p>
+            )}
+          </Card>
 
-          <div className="flex flex-col gap-3 border-t border-slate-200 pt-5">
+          <Card className="flex min-w-0 flex-col gap-4 p-4 sm:p-6 lg:sticky lg:top-6">
             <p className="text-sm font-semibold uppercase tracking-wide text-accent-700">Results</p>
             {reachMissing && invalidLabels.length === 0 && (
               <p className="text-base text-slate-600">
                 Enter families reached and average schemes matched per family to see totals.
               </p>
             )}
-            <dl className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-              <div className="flex flex-col gap-1 rounded-xl bg-primary-50 p-4">
+            <dl className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-1">
+              <div className="flex min-w-0 flex-col gap-1 rounded-xl bg-primary-50 p-4">
                 <dt className="text-sm font-semibold text-slate-700">Total scheme matches</dt>
                 <dd className="break-words text-2xl font-bold text-slate-900">{formatNumber(totalMatches)}</dd>
                 <dd className="text-sm text-slate-600">Families reached × average schemes matched per family</dd>
               </div>
-              <div className="flex flex-col gap-1 rounded-xl bg-primary-50 p-4">
+              <div className="flex min-w-0 flex-col gap-1 rounded-xl bg-primary-50 p-4">
                 <dt className="text-sm font-semibold text-slate-700">Estimated annual benefit unlocked</dt>
                 <dd className="break-words text-2xl font-bold text-slate-900">{formatNumber(annualBenefit, 'Rs ')}</dd>
                 <dd className="text-sm text-slate-600">Total scheme matches × average benefit value per scheme</dd>
               </div>
-              <div className="flex flex-col gap-1 rounded-xl bg-primary-50 p-4">
+              <div className="flex min-w-0 flex-col gap-1 rounded-xl bg-primary-50 p-4">
                 <dt className="text-sm font-semibold text-slate-700">Middleman fees avoided</dt>
                 <dd className="break-words text-2xl font-bold text-slate-900">{formatNumber(middlemanAvoided, 'Rs ')}</dd>
                 <dd className="text-sm text-slate-600">Families reached × middleman fee avoided per family</dd>
               </div>
-              <div className="flex flex-col gap-1 rounded-xl bg-primary-50 p-4">
+              <div className="flex min-w-0 flex-col gap-1 rounded-xl bg-primary-50 p-4">
                 <dt className="text-sm font-semibold text-slate-700">NGO / CSR price at this reach</dt>
                 <dd className="break-words text-2xl font-bold text-slate-900">{formatNumber(ngoFee, 'Rs ')}</dd>
                 <dd className="text-sm text-slate-600">Families reached × NGO / CSR price per family per year</dd>
@@ -317,8 +393,8 @@ export default function Partners() {
             <p className="text-sm text-slate-600">
               These are arithmetic on the assumptions you enter. They are not guaranteed outcomes.
             </p>
-          </div>
-        </Card>
+          </Card>
+        </div>
       </section>
 
       <section aria-labelledby={`${idPrefix}-rollout`} className="flex flex-col gap-4">
@@ -332,7 +408,7 @@ export default function Partners() {
               <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary-700 text-sm font-bold text-white">
                 {index + 1}
               </span>
-              <span className="pt-1 text-base leading-relaxed text-slate-700">{step}</span>
+              <span className="min-w-0 pt-1 text-base leading-relaxed text-slate-700">{step}</span>
             </li>
           ))}
         </ol>

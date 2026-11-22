@@ -4,9 +4,9 @@
 
 @layer base {
   body {
-    background-color: #fffbf2;
+    background-color: theme('colors.cream');
     font-size: 18px;
-    color: #0f172a;
+    color: theme('colors.slate.900');
     -webkit-font-smoothing: antialiased;
   }
 
@@ -25,7 +25,7 @@
   input,
   textarea,
   select {
-    min-height: 48px;
+    min-height: 44px;
   }
 
   input[type='checkbox'],
