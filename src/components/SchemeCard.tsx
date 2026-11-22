@@ -73,6 +73,9 @@ const FIELD_KEYS: Record<keyof Profile, MessageKey> = {
   is_bpl: 'reason.field.is_bpl',
   lives_in_rural_area: 'reason.field.lives_in_rural_area',
   is_destitute: 'reason.field.is_destitute',
+  leased_cultivated_land_acres: 'reason.field.leased_cultivated_land_acres',
+  has_ccrc: 'reason.field.has_ccrc',
+  epanta_booked: 'reason.field.epanta_booked',
 };
 
 /** Localised label for a profile field name. Unknown fields fall back to the raw name. */

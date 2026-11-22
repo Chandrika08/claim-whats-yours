@@ -57,6 +57,9 @@ export const resultsEn = {
 
   // Profile field labels. English keeps the raw field name, as the UI does today.
   'reason.field.state': 'state',
+  'reason.field.leased_cultivated_land_acres': 'land cultivated on lease (acres)',
+  'reason.field.has_ccrc': 'CCRC',
+  'reason.field.epanta_booked': 'e-Panta booking',
   'reason.field.age': 'age',
   'reason.field.gender': 'gender',
   'reason.field.occupation': 'occupation',
@@ -138,6 +141,9 @@ export const resultsTe: Record<keyof typeof resultsEn, string> = {
     'ఇది అర్హత అంచనా మాత్రమే, హామీ కాదు. దరఖాస్తు చేసే ముందు అధికారిక కార్యాలయంలో నిర్ధారించుకోండి.',
 
   'reason.field.state': 'రాష్ట్రం',
+  'reason.field.leased_cultivated_land_acres': 'కౌలుకు సాగు చేస్తున్న భూమి (ఎకరాలు)',
+  'reason.field.has_ccrc': 'CCRC',
+  'reason.field.epanta_booked': 'ఈ-పంట నమోదు',
   'reason.field.age': 'వయసు',
   'reason.field.gender': 'లింగం',
   'reason.field.occupation': 'వృత్తి',
@@ -219,6 +225,9 @@ export const resultsHi: Record<keyof typeof resultsEn, string> = {
     'यह केवल संभावित पात्रता है, पक्की गारंटी नहीं। आवेदन से पहले आधिकारिक कार्यालय से पुष्टि कर लें।',
 
   'reason.field.state': 'राज्य',
+  'reason.field.leased_cultivated_land_acres': 'पट्टे पर जोती गई भूमि (एकड़)',
+  'reason.field.has_ccrc': 'CCRC',
+  'reason.field.epanta_booked': 'ई-पंता बुकिंग',
   'reason.field.age': 'उम्र',
   'reason.field.gender': 'लिंग',
   'reason.field.occupation': 'पेशा',

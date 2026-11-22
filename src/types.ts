@@ -5,6 +5,9 @@ export type Profile = {
   occupation: "farmer" | "agricultural_labourer" | "student" | "other" | null;
   land_acres: number | null;
   land_ownership: "owner" | "tenant" | "none" | null;
+  leased_cultivated_land_acres?: number | null;  // acres cultivated on lease, separate from land_acres (owned)
+  has_ccrc?: boolean | null;                     // Common Charter of Rights for Cultivators card
+  epanta_booked?: boolean | null;                // e-Panta crop booking done
   annual_household_income: number | null;   // rupees per year
   social_category: "general" | "obc" | "sc" | "st" | null;  // optional, not used by current schemes, do not ask
   has_bank_account: boolean | null;
